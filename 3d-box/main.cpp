@@ -50,7 +50,7 @@
  오른쪽으로 갈수록 x증가
  위로 갈수록 y증가
  뒤로 갈수로 z증가
- 각각의 모서리는 길이2
+ 각각의 모서리는 길이2000
 */
 
 
@@ -62,9 +62,9 @@
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 
-#define DISTANCE 700
+#define DISTANCE 500
 #define INDEX 15
-#define ALLOWABLE_ERROR 10
+#define ALLOWABLE_ERROR 1
 
 //앞면 시계방향	:0123
 //뒷면 시계방향	:5476
@@ -93,7 +93,7 @@ struct CUBE_struct
 int index[6][4] = { { 0,1,2,3 },{ 5,4,7,6 },{ 3,7,4,0 },{ 1,5,6,2 },{ 4,5,1,0 },{ 7,3,2,6 } };
 /* 시계방향 판별용 */
 
-XMFLOAT3 Camera_F = XMFLOAT3((float)0, (float)0, (float)-3000);
+XMFLOAT3 Camera_F = XMFLOAT3((float)0, (float)0, (float)-4000);
 XMVECTOR Camera_V;
 XMMATRIX Camera_M;
 /* 카메라관련 변수 */
@@ -252,7 +252,7 @@ void handing_WM_PAINT(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	for (int i = 0; i < 6; i++)
 	{
 		//시계방향이 아닌 = 뒤를 보고있는 면은 렌더링안함
-		XMVECTOR V = XMVector3Cross((CUBE.V[index[i][1]] - CUBE.V[index[i][0]]), (CUBE.V[index[i][2]] - CUBE.V[index[i][0]]));
+		XMVECTOR V = XMVector3Cross((CUBE.V1[index[i][2]] - CUBE.V1[index[i][1]]), (CUBE.V1[index[i][3]] - CUBE.V[index[i][1]]));
 		if (XMVectorGetZ(V) + (FLOAT)ALLOWABLE_ERROR >= (FLOAT)0)
 			continue;
 
@@ -291,7 +291,7 @@ void handing_WM_PAINT(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	if (mouse_state)
 	{
-		NewP = CreatePen(PS_DASH, 1, RGB(255, 255, 255));
+		NewP = CreatePen(PS_DASH, 5, RGB(255, 255, 255));
 		OldP = (HPEN)SelectObject(hdc, NewP);
 		MoveToEx(hdc, oldPx, oldPy, NULL);
 		LineTo(hdc, Px, Py);
