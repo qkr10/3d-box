@@ -1,16 +1,16 @@
 /*
-                        *%%::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::.
-                      *@V[4]@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@+
-                    *@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@V[5]#
-                  +@@@@@@@@@                                                          +@@@@@@.
-                *@@@@@++@@@@                                                        *@@@@@@@@.
-              *@@@@@+  =@@@@                                                      *@@@@@+@@@@.
-            +@@@@@*    =@@@@                                                    *@@@@@+  @@@@.
-          *@@@@@+      =@@@@                                                  *@@@@@+    @@@@.
-        *@@@@@+        +@@@@                                                *@@@@@+      @@@@.
-      *@@@@@*          .%@@*                                              #@@@@@+        @@@@.
-    *@@@@@+                                                             *@@@@@+          @@@@.
- :*@@@@@%:.:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*@@@@@+            @@@@.
+*%%::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::.
+*@V[4]@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@+
+*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@V[5]#
++@@@@@@@@@                                                          +@@@@@@.
+*@@@@@++@@@@                                                        *@@@@@@@@.
+*@@@@@+  =@@@@                                                      *@@@@@+@@@@.
++@@@@@*    =@@@@                                                    *@@@@@+  @@@@.
+*@@@@@+      =@@@@                                                  *@@@@@+    @@@@.
+*@@@@@+        +@@@@                                                *@@@@@+      @@@@.
+*@@@@@*          .%@@*                                              #@@@@@+        @@@@.
+*@@@@@+                                                             *@@@@@+          @@@@.
+:*@@@@@%:.:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*@@@@@+            @@@@.
 =V[0]@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@V[1]=              @@@@.
 =@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@               @@@@.
 =@@@@                                                                +@@@@               @@@@.
@@ -46,11 +46,42 @@
 =@@@@@@@@%.                                                          +@@@@@@@=
 =@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@:
 =V[3]@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@V[2]
- :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
- 오른쪽으로 갈수록 x증가
- 위로 갈수록 y증가
- 뒤로 갈수로 z증가
- 각각의 모서리는 길이2000
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+오른쪽으로 갈수록 x증가
+위로 갈수록 y증가
+뒤로 갈수로 z증가
+각각의 모서리는 길이2000
+
+
+y축                                               화면                                         :::::::
+.+*+.                                               %                                   .::::::
+.++= % :++                                             %                            .::::::
+:*:    %    +*.                                          %                     .:::::.
+%                                                 %              .:::::.
+%                                                 %       .::::::
+%                                                 %.::::::.
+%                                           .::::.%
+%                                    .:::::.      %                  :=::
+%                             ::::::..            %                 #.   ...::::::::
+%                      ::::::.                    %                #                ...::::::::
+#               .::::::                           %              :*                            ....%*
+.::::.%::::::::.::::::                                  %             *:                                *.
+@     %        %                                        %           .+                                 *   =.
+@    원점(카메라)::::::::::::::::::::::::::::::::::::::::.%.::::::::.*+:::::::::::::::::::::::::::::::::%:::::#z축
+*:+=+:.:::::::.#:.                                      %         +:                                 %     :
+:::.                :::::::.                              %        *                                  #
++   :::                            :::::::.                      %       *::..                             :*
+x축=...                                    ::::::..              %            .::::::::..                 =+
+:::::::.      %                       .::::::::..     +=
+:::::.%                                 .::::+:
+% ::::::..
+%        .::::::..
+%               ..::::::.
+%                        .::::::
+%                               ..::::::.
+%                                       .:::::::
+%                                               :
+시야각 : 16/9 ~ -16/9
 */
 
 
@@ -64,7 +95,7 @@ using namespace DirectX::PackedVector;
 
 #define DISTANCE 500
 #define INDEX 15
-#define ALLOWABLE_ERROR 1
+#define ALLOWABLE_ERROR 0.0005
 
 //앞면 시계방향	:0123
 //뒷면 시계방향	:5476
@@ -72,29 +103,32 @@ using namespace DirectX::PackedVector;
 //오른편 시계방향	:1562
 //윗면 시계방향	:4510
 //아랫면 시계방향	:7326
-//시계방향이 아니게된 면은 렌더링안함
-struct CUBE_struct
+struct original_CUBE_struct
 {
 	XMFLOAT3 F[8] = {
-	{ (FLOAT)-1000, (FLOAT)1000, (FLOAT)-1000 },
-	{ (FLOAT)1000, (FLOAT)1000, (FLOAT)-1000 },
-	{ (FLOAT)1000, (FLOAT)-1000, (FLOAT)-1000 },
-	{ (FLOAT)-1000, (FLOAT)-1000, (FLOAT)-1000 },
-	{ (FLOAT)-1000, (FLOAT)1000, (FLOAT)1000 },
-	{ (FLOAT)1000, (FLOAT)1000, (FLOAT)1000 },
-	{ (FLOAT)1000, (FLOAT)-1000, (FLOAT)1000 },
-	{ (FLOAT)-1000, (FLOAT)-1000, (FLOAT)1000 } };
+		{ (FLOAT)-1000, (FLOAT)1000, (FLOAT)-1000 },
+		{ (FLOAT)1000, (FLOAT)1000, (FLOAT)-1000 },
+		{ (FLOAT)1000, (FLOAT)-1000, (FLOAT)-1000 },
+		{ (FLOAT)-1000, (FLOAT)-1000, (FLOAT)-1000 },
+		{ (FLOAT)-1000, (FLOAT)1000, (FLOAT)1000 },
+		{ (FLOAT)1000, (FLOAT)1000, (FLOAT)1000 },
+		{ (FLOAT)1000, (FLOAT)-1000, (FLOAT)1000 },
+		{ (FLOAT)-1000, (FLOAT)-1000, (FLOAT)1000 } };
 	//8개의 점의 좌표
+}original_CUBE;
 
-	XMVECTOR V[8] = { NULL, }; //물체내부를 (0.0)으로 잡은상태
-	XMVECTOR V1[8] = { NULL, }; //2차원으로 투영시킨상태
+struct CUBE_struct
+{
+	XMVECTOR V[8] = { NULL, }; //물체내부를 원점으로 잡은상태
+	XMVECTOR V1[8] = { NULL, }; //시야좌표계로 변환된 상태 (카메라가 원점)
 }CUBE;
 
 int index[6][4] = { { 0,1,2,3 },{ 5,4,7,6 },{ 3,7,4,0 },{ 1,5,6,2 },{ 4,5,1,0 },{ 7,3,2,6 } };
-/* 시계방향 판별용 */
+/* 시계방향 */
 
 XMFLOAT3 Camera_F = XMFLOAT3((float)0, (float)0, (float)-4000);
 XMVECTOR Camera_V;
+XMVECTOR Camera_LookAt;
 XMMATRIX Camera_M;
 /* 카메라관련 변수 */
 
@@ -113,7 +147,9 @@ HINSTANCE g_hInst;
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 void handing_WM_CREATE(HWND, UINT, WPARAM, LPARAM);
 void handing_WM_PAINT(HWND, UINT, WPARAM, LPARAM);
+bool check_vertex(FLOAT Y[4], FLOAT X[4], const int i, const int a, const int b);
 void handing_WM_KEYDOWN(HWND, UINT, WPARAM, LPARAM);
+FLOAT inline abs(FLOAT F) { return F < 0 ? F * -1 : F; }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine, int nCmdShow)
 {
@@ -182,18 +218,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 		handing_WM_KEYDOWN(hWnd, uMsg, wParam, lParam);
 		break;
-	case WM_LBUTTONDOWN:
-		mouse_state = true;
-		oldPx = LOWORD(lParam);
-		oldPy = HIWORD(lParam);
-		break;
-	case WM_LBUTTONDBLCLK:
+	case WM_MOUSEMOVE:
+		if (!(wParam & MK_LBUTTON))
+			break;
 		Px = LOWORD(lParam);
 		Py = HIWORD(lParam);
 		paint_trigger = true;
+		if (mouse_state)
+			break;
+		oldPx = LOWORD(lParam);
+		oldPy = HIWORD(lParam);
+		mouse_state = true;
 		break;
 	case WM_LBUTTONUP:
+		if (!mouse_state)
+			break;
 		mouse_state = false;
+		paint_trigger = true;
 		break;
 	case WM_DESTROY:
 		KillTimer(hWnd, 0);
@@ -219,9 +260,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 void handing_WM_CREATE(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	for (int i = 0; i < 8; i++)
-		CUBE.V[i] = XMLoadFloat3(&(CUBE.F[i]));
-	SetTimer(hWnd, 0, 30, NULL);
+		CUBE.V[i] = XMLoadFloat3(&(original_CUBE.F[i]));
+	SetTimer(hWnd, 0, 1000 / 45, NULL); //45프레임
 	Camera_V = XMLoadFloat3(&Camera_F);
+	Camera_LookAt = XMVectorSet(0, 0, 1, 0);
 	XMVECTOR target = XMVectorZero();
 	XMVECTOR up = XMVectorSet(0, 1, 0, 0);
 	Camera_M = XMMatrixLookAtLH(Camera_V, target, up);
@@ -239,37 +281,32 @@ void handing_WM_PAINT(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	HBITMAP mem_new = CreateCompatibleBitmap(hdc, client_size.right, client_size.bottom);
 	HBITMAP mem_old = (HBITMAP)SelectObject(hdc, mem_new);
 
-	//하얀 선을 그리기 위해 하얀펜을 준비
+	//하이얀 펜을 준비
 	HPEN NewP, OldP;
 	NewP = (HPEN)GetStockObject(WHITE_PEN);
 	OldP = (HPEN)SelectObject(hdc, NewP);
 
-	//시야 좌표계로 변환
 	for (int i = 0; i < 8; i++)
 		CUBE.V1[i] = XMVector3TransformCoord(CUBE.V[i], Camera_M);
 
-	//6개의 면을 각각 렌더링
+	//6개의 면을 렌더링
 	for (int i = 0; i < 6; i++)
 	{
-		//시계방향이 아닌 = 뒤를 보고있는 면은 렌더링안함
-		XMVECTOR V = XMVector3Cross((CUBE.V1[index[i][2]] - CUBE.V1[index[i][1]]), (CUBE.V1[index[i][3]] - CUBE.V[index[i][1]]));
-		if (XMVectorGetZ(V) + (FLOAT)ALLOWABLE_ERROR >= (FLOAT)0)
-			continue;
-
-		//한면마다 있는 4개의 점or모서리 를 렌더링
+		FLOAT X[4], Y[4];
+		//면마다 있는 4개의 점과모서리를 렌더링
 		for (int j = 0; j < 4; j++)
 		{
+			//2차원으로 점을 옮김
 			//카메라 = 원점과 화면사이의 거리를 DISTANCE로 놓음
 			//DISTANCE가 클수록 물체가 크게보임
-			FLOAT X = XMVectorGetX(CUBE.V1[index[i][j]]) * (FLOAT)DISTANCE / XMVectorGetZ(CUBE.V1[index[i][j]]) + 960;
-			FLOAT Y = XMVectorGetY(CUBE.V1[index[i][j]]) * (FLOAT)DISTANCE / XMVectorGetZ(CUBE.V1[index[i][j]]) + 540;
+			X[j] = XMVectorGetX(CUBE.V1[index[i][j]]) * (FLOAT)DISTANCE / XMVectorGetZ(CUBE.V1[index[i][j]]) + 960;
+			Y[j] = XMVectorGetY(CUBE.V1[index[i][j]]) * (FLOAT)DISTANCE / XMVectorGetZ(CUBE.V1[index[i][j]]) + 540;
 
-			//점을 4개 찍는다
+			//점을 9개씩 찍는다
 			COLORREF C = RGB(255, 255, 255);
-			SetPixel(hdc, (int)X, (int)Y, C);
-			SetPixel(hdc, (int)X + 1, (int)Y, C);
-			SetPixel(hdc, (int)X + 1, (int)Y + 1, C);
-			SetPixel(hdc, (int)X, (int)Y + 1, C);
+			for (int i = -1; i < 2; i++)
+				for (int j = -1; j < 2; j++)
+					SetPixel(hdc, (int)X[j] + i, (int)Y[j] + j, C);
 
 			//INDEX를 조절해 하얀선분 길이조절
 			//INDEX가 클수록 길이가 길어짐
@@ -284,21 +321,20 @@ void handing_WM_PAINT(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			MoveToEx(hdc, (int)X1, (int)Y1, NULL);
 			LineTo(hdc, (int)X2, (int)Y2);
-			/*선 출력 끝!*/
 		}
 	}
+	SelectObject(hdc, OldP);
 	/* 상자 출력 끝! */
 
 	if (mouse_state)
 	{
-		NewP = CreatePen(PS_DASH, 5, RGB(255, 255, 255));
+		NewP = CreatePen(PS_SOLID, 1, RGB(255, 255, 255));
 		OldP = (HPEN)SelectObject(hdc, NewP);
 		MoveToEx(hdc, oldPx, oldPy, NULL);
 		LineTo(hdc, Px, Py);
 		SelectObject(hdc, OldP);
 	}
 
-	SelectObject(hdc, OldP);
 	BitBlt(h_dc, 0, 0, client_size.right, client_size.bottom, hdc, 0, 0, SRCCOPY);
 	mem_new = (HBITMAP)SelectObject(hdc, mem_old);
 
@@ -308,6 +344,21 @@ void handing_WM_PAINT(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return;
 }
 
+bool check_vertex(FLOAT  Y[4], FLOAT  X[4], const int i, const int a, const int b)
+{
+	FLOAT
+	Y1 = XMVectorGetY(CUBE.V1[index[i][a]]), Y2 = XMVectorGetY(CUBE.V1[index[i][b]]),
+	X1 = XMVectorGetX(CUBE.V1[index[i][a]]), X2 = XMVectorGetX(CUBE.V1[index[i][b]]);
+	if (Y1 <= Y2 && Y[a] > Y[b])
+		return true;
+	if (Y1 >= Y2 && Y[a] < Y[b])
+		return true;
+	if (X1 <= X2 && X[a] > X[b])
+		return true;
+	if (X1 >= X2 && X[a] < X[b])
+		return true;
+	return false;
+}
 
 void handing_WM_KEYDOWN(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -317,22 +368,22 @@ void handing_WM_KEYDOWN(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		DestroyWindow(hWnd);
 		break;
 	case VK_UP:
-		angle = 30;
+		angle = 1;
 		Axis = XMVectorSet(1, 0, 0, 0);
 		state = true;
 		break;
 	case VK_DOWN:
-		angle = 30;
+		angle = 1;
 		Axis = XMVectorSet(-1, 0, 0, 0);
 		state = true;
 		break;
 	case VK_LEFT:
-		angle = 30;
-		Axis = XMVectorSet(0,-1, 0, 0);
+		angle = 1;
+		Axis = XMVectorSet(0, -1, 0, 0);
 		state = true;
 		break;
 	case VK_RIGHT:
-		angle = 30;
+		angle = 1;
 		Axis = XMVectorSet(0, 1, 0, 0);
 		state = true;
 		break;
