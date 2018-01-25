@@ -1,90 +1,87 @@
 /*
-*%%::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::.
-*@V[4]@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@+
-*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@V[5]#
-+@@@@@@@@@                                                          +@@@@@@.
-*@@@@@++@@@@                                                        *@@@@@@@@.
-*@@@@@+  =@@@@                                                      *@@@@@+@@@@.
-+@@@@@*    =@@@@                                                    *@@@@@+  @@@@.
-*@@@@@+      =@@@@                                                  *@@@@@+    @@@@.
-*@@@@@+        +@@@@                                                *@@@@@+      @@@@.
-*@@@@@*          .%@@*                                              #@@@@@+        @@@@.
-*@@@@@+                                                             *@@@@@+          @@@@.
-:*@@@@@%:.:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*@@@@@+            @@@@.
-=V[0]@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@V[1]=              @@@@.
-=@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@               @@@@.
-=@@@@                                                                +@@@@               @@@@.
-=@@@@                   .==                                          *@@@@               @@@@.
-=@@@@                  =@@@@                                         *@@@@               @@@@.
-=@@@@                  =@@@@                                         *@@@@               @@@@.
-=@@@@                  =@@@@                                         *@@@@               @@@@.
-=@@@@                  =@@@@                                         *@@@@               @@@@.
-=@@@@                  =@@@@                                         *@@@@               @@@@.
-=@@@@                  =@@@@                                         *@@@@               @@@@.
-=@@@@                  =@@@@                                         *@@@@               @@@@.
-=@@@@                  =@@@@                                         *@@@@               @@@@.
-=@@@@                  =@@@@                                         *@@@@               @@@@.
-=@@@@                  =@@@@                                         *@@@@               @@@@.
-=@@@@                    ..                                          *@@@@               @@@@.
-=@@@@                                                                *@@@@               @@@@.
-=@@@@                                                                *@@@@               @@@@.
-=@@@@                    ::                                          *@@@@               @@@@.
-=@@@@                  =@@@@                                         *@@@@               @@@@.
-=@@@@                  =@@@@                                         *@@@@               @@@@.
-=@@@@                  =@@@@                                         *@@@@               @@@@.
-=@@@@                  =@@@@                                         *@@@@               @@@@.
-=@@@@                  =@@@@                                         *@@@@  .++++++++++++@@@@@@=
-=@@@@                  =@@@@    =@@@@@@@@@@@@@@.   #@@@@@@@@@@@@@@@= *@@@@ +@@@@@@@@@@@@@@@@@@@@
-=@@@@                  :V[7]    +@@@@@@@@@@@@@@:   @@@@@@@@@@@@@@@@* *@@@@  *%%%%%%%%##@@V[6]@:
-=@@@@                    ..       ............      ..............   *@@@@            #@@@@@:
-=@@@@                                                                *@@@@         .%@@@@@:
-=@@@@        ..                                                      *@@@@       .%@@@@@:
-=@@@@      .#@@@=                                                    *@@@@    .%%@@@@@:
-=@@@@    .%@@@@@:                                                    *@@@@  .%@@@@@@:
-=@@@@  .%@@@@@:                                                      *@@@@ %@@@@@:
-=@@@@.%@@@@@=                                                        *@@@@@@@@@=
-=@@@@@@@@%.                                                          +@@@@@@@=
-=@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@:
+=                       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=                     @@V[4]@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+=                   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@V[5]@
+=                 @@@@@@@@@@                                                           @@@@@@
+=               @@@@@@ @@@@@                                                         @@@@@@@@
+=             @@@@@@   @@@@@                                                       @@@@@ @@@@
+=           @@@@@@     @@@@@                                                     @@@@@   @@@@
+=         @@@@@@       @@@@@                                                   @@@@@     @@@@
+=       @@@@@@         @@@@@                                                 @@@@@       @@@@
+=     @@@@@@           @@@@@                                               @@@@@         @@@@
+=   @@@@@@                                                               @@@@@           @@@@
+= @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@             @@@@
+=V[0]@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@V[1]               @@@@
+=@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@               @@@@
+=@@@@                                                                 @@@@               @@@@
+=@@@@                                                                 @@@@               @@@@
+=@@@@                  @@@@@                                          @@@@               @@@@
+=@@@@                  @@@@@                                          @@@@               @@@@
+=@@@@                  @@@@@                                          @@@@               @@@@
+=@@@@                  @@@@@                                          @@@@               @@@@
+=@@@@                  @@@@@                                          @@@@               @@@@
+=@@@@                  @@@@@                                          @@@@               @@@@
+=@@@@                  @@@@@                                          @@@@               @@@@
+=@@@@                  @@@@@                                          @@@@               @@@@
+=@@@@                  @@@@@                                          @@@@               @@@@
+=@@@@                  @@@@@                                          @@@@               @@@@
+=@@@@                                                                 @@@@               @@@@
+=@@@@                                                                 @@@@               @@@@
+=@@@@                  @@@@@                                          @@@@               @@@@
+=@@@@                  @@@@@                                          @@@@               @@@@
+=@@@@                  @@@@@                                          @@@@               @@@@
+=@@@@                  @@@@@                                          @@@@               @@@@
+=@@@@                  @@@@@                                          @@@@               @@@@
+=@@@@                  @@@@@                                          @@@@               @@@@
+=@@@@                  @@@@@                                          @@@@               @@@@
+=@@@@                  @@@@@    @@@@@@@@@@@@@@@    @@@@@@@@@@@@@@@@   @@@@  @@@@@@@@@@@@@@@@@
+=@@@@                  @V[7]    @@@@@@@@@@@@@@@    @@@@@@@@@@@@@@@@   @@@@  @@@@@@@@@@@@@V[6]
+=@@@@                                                                 @@@@             @@@@@
+=@@@@                                                                 @@@@           @@@@@
+=@@@@          @@@@@                                                  @@@@         @@@@@
+=@@@@        @@@@@                                                    @@@@       @@@@@
+=@@@@      @@@@@                                                      @@@@     @@@@@
+=@@@@    @@@@@                                                        @@@@   @@@@@
+=@@@@  @@@@@                                                          @@@@ @@@@@
+=@@@@@@@@                                                             @@@@@@@@
+=@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 =V[3]@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@V[2]
-:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 오른쪽으로 갈수록 x증가
 위로 갈수록 y증가
 뒤로 갈수로 z증가
 각각의 모서리는 길이2000
 
 
-y축                                               화면                                         :::::::
-.+*+.                                               %                                   .::::::
-.++= % :++                                             %                            .::::::
-:*:    %    +*.                                          %                     .:::::.
-%                                                 %              .:::::.
-%                                                 %       .::::::
-%                                                 %.::::::.
-%                                           .::::.%
-%                                    .:::::.      %                  :=::
-%                             ::::::..            %                 #.   ...::::::::
-%                      ::::::.                    %                #                ...::::::::
-#               .::::::                           %              :*                            ....%*
-.::::.%::::::::.::::::                                  %             *:                                *.
-@     %        %                                        %           .+                                 *   =.
-@    원점(카메라)::::::::::::::::::::::::::::::::::::::::.%.::::::::.*+:::::::::::::::::::::::::::::::::%:::::#z축
-*:+=+:.:::::::.#:.                                      %         +:                                 %     :
-:::.                :::::::.                              %        *                                  #
-+   :::                            :::::::.                      %       *::..                             :*
-x축=...                                    ::::::..              %            .::::::::..                 =+
-:::::::.      %                       .::::::::..     +=
-:::::.%                                 .::::+:
-% ::::::..
-%        .::::::..
-%               ..::::::.
-%                        .::::::
-%                               ..::::::.
-%                                       .:::::::
-%                                               :
+=      y축                                               화면                                         :::::::
+=     .+++.                                               %                                   :::::::
+=   ++  %  ++                                             %                            :::::::
+= ++    %    ++                                           %                     .::::::
+=       %                                                 %              :::::::
+=       %                                                 %       :::::::
+=       %                                                 %:::::::
+=       %                                           ::::::%
+=       %                                    :::::::      %                  ::::
+=       %                             :::::::             %                ::    :::::::::::
+=       %                      :::::::                    %               ::                :::::::::::
+=       %               :::::::                           %              ::                            ::::
+= ::::::%:::::::::::::::                                  %            ::                                ::  +
+= :     %        :                                        %           ::                                ::    +
+= :    원점(카메라)::::::::::::::::::::::::::::::::::::::::.%.:::::::::::::::::::::::::::::::::::::::::::::::::::z축
+= ::::::::::::::::::                                      %         ::                                ::      +
+=                   ::::::::                              %        ::                                ::      +
+=                           ::::::::                      %       :::::                             ::
+=                                   ::::::::              %            :::::::::::                 ::
+=                                           ::::::::      %                       :::::::::::     ::
+=                                                   ::::::%                                 :::::::
+=                                                         %::::::::
+=                                                         %        :::::::
+=                                                         %               :::::::::
+=                                                         %                        :::::::
+=                                                         %                               ::::::::
+=                                                         %                                       ::::::::
+=                                                         %                                               :
 시야각 : 16/9 ~ -16/9
 */
-
-
 
 #include <Windows.h>
 #include <DirectXMath.h>
@@ -93,9 +90,7 @@ x축=...                                    ::::::..              %            .:
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 
-#define DISTANCE 500
-#define INDEX 15
-#define ALLOWABLE_ERROR 0.0005
+const float DISTANCE = 500;
 
 //앞면 시계방향	:0123
 //뒷면 시계방향	:5476
@@ -120,13 +115,13 @@ struct original_CUBE_struct
 struct CUBE_struct
 {
 	XMVECTOR V[8] = { NULL, }; //물체내부를 원점으로 잡은상태
-	XMVECTOR V1[8] = { NULL, }; //시야좌표계로 변환된 상태 (카메라가 원점)
 }CUBE;
 
 int index[6][4] = { { 0,1,2,3 },{ 5,4,7,6 },{ 3,7,4,0 },{ 1,5,6,2 },{ 4,5,1,0 },{ 7,3,2,6 } };
 /* 시계방향 */
 
 XMFLOAT3 Camera_F = XMFLOAT3((float)0, (float)0, (float)-4000);
+XMVECTOR up = XMVectorSet(0, 1, 0, 0);
 XMVECTOR Camera_V;
 XMVECTOR Camera_LookAt;
 XMMATRIX Camera_M;
@@ -135,7 +130,8 @@ XMMATRIX Camera_M;
 XMVECTOR Axis; float angle = 0;
 /* 회전관련 변수 */
 
-bool paint_trigger = false, state = false, mouse_state = false;
+bool paint_trigger = false, lbutton = false, rbutton = false;
+bool box_rotate = false, camera_rotate = false;
 /* trigger 변수 */
 
 int oldPx = 0, oldPy = 0;
@@ -147,13 +143,13 @@ HINSTANCE g_hInst;
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 void handing_WM_CREATE(HWND, UINT, WPARAM, LPARAM);
 void handing_WM_PAINT(HWND, UINT, WPARAM, LPARAM);
-bool check_vertex(FLOAT Y[4], FLOAT X[4], const int i, const int a, const int b);
 void handing_WM_KEYDOWN(HWND, UINT, WPARAM, LPARAM);
+void QUIT(HWND, UINT, WPARAM, LPARAM);
 FLOAT inline abs(FLOAT F) { return F < 0 ? F * -1 : F; }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine, int nCmdShow)
 {
-	LPCWSTR ClassName = TEXT("호옹이");
+	LPCWSTR ClassName = TEXT("doki_doki_literature_club");
 	LPCWSTR Title = TEXT("두근두근");
 
 	g_hInst = hInstance;
@@ -182,21 +178,29 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine
 	MSG msg = { 0 };
 	while (msg.message != WM_QUIT)
 	{
-		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
-		{
+		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
-		else if (state)
-		{
+		else if (box_rotate) {
 			XMMATRIX M = XMMatrixRotationAxis(Axis, XMConvertToRadians(angle));
 			for (int i = 0; i < 8; i++)
 				CUBE.V[i] = XMVector3TransformCoord(CUBE.V[i], M);
-			state = false;
 			paint_trigger = true;
+			box_rotate = false;
 		}
-		else if (GetMessage(&msg, 0, 0, 0))
-		{
+		else if (camera_rotate) {
+			XMMATRIX M = XMMatrixRotationY(XMConvertToRadians(oldPx - Px) / (float)8);
+			Camera_LookAt = XMVector3TransformCoord(Camera_LookAt - Camera_V, M) + Camera_V;
+			M = XMMatrixRotationX(XMConvertToRadians(Py - oldPy) / (float)8);
+			Camera_LookAt = XMVector3TransformCoord(Camera_LookAt - Camera_V, M) + Camera_V;
+
+			Camera_M = XMMatrixLookAtLH(Camera_V, Camera_LookAt, up);
+			paint_trigger = true;
+			oldPx = Px; oldPy = Py;
+			camera_rotate = false;
+		}
+		else if (GetMessage(&msg, 0, 0, 0)) {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
@@ -219,26 +223,36 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		handing_WM_KEYDOWN(hWnd, uMsg, wParam, lParam);
 		break;
 	case WM_MOUSEMOVE:
-		if (!(wParam & MK_LBUTTON))
-			break;
 		Px = LOWORD(lParam);
 		Py = HIWORD(lParam);
-		paint_trigger = true;
-		if (mouse_state)
-			break;
-		oldPx = LOWORD(lParam);
-		oldPy = HIWORD(lParam);
-		mouse_state = true;
+		if (wParam & MK_LBUTTON)
+		{
+			paint_trigger = true;
+			if (lbutton) break;
+			oldPx = LOWORD(lParam);
+			oldPy = HIWORD(lParam);
+			lbutton = true;
+		}
+		else if (wParam & MK_RBUTTON)
+		{
+			camera_rotate = true;
+			if (rbutton) break;
+			oldPx = LOWORD(lParam);
+			oldPy = HIWORD(lParam);
+			rbutton = true;
+		}
 		break;
 	case WM_LBUTTONUP:
-		if (!mouse_state)
+		if (!lbutton)
 			break;
-		mouse_state = false;
+		lbutton = false;
 		paint_trigger = true;
 		break;
+	case WM_RBUTTONUP:
+		rbutton = false;
+		break;
 	case WM_DESTROY:
-		KillTimer(hWnd, 0);
-		PostQuitMessage(0);
+		QUIT(hWnd, uMsg, wParam, lParam);
 		break;
 	case WM_TIMER:
 		switch (wParam)
@@ -248,6 +262,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				break;
 			InvalidateRect(hWnd, NULL, true);
 			paint_trigger = false;
+			break;
+		case 1:
+			if (GetAsyncKeyState('W') & 0x8000) Camera_V = XMVector3Normalize(Camera_LookAt) * 50 + Camera_V;
+			if (GetAsyncKeyState('A') & 0x8000) Camera_V = XMVector3Normalize(XMVector3Cross(Camera_LookAt, up)) * 50 + Camera_V;
+			if (GetAsyncKeyState('D') & 0x8000) Camera_V = XMVector3Normalize(XMVector3Cross(up, Camera_LookAt)) * 50 + Camera_V;
+			if (GetAsyncKeyState('S') & 0x8000) Camera_V = XMVector3Normalize(Camera_LookAt) * -50 + Camera_V;
+			Camera_M = XMMatrixLookAtLH(Camera_V, Camera_LookAt, up);
+			paint_trigger = true;
 			break;
 		}
 		break;
@@ -262,11 +284,10 @@ void handing_WM_CREATE(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	for (int i = 0; i < 8; i++)
 		CUBE.V[i] = XMLoadFloat3(&(original_CUBE.F[i]));
 	SetTimer(hWnd, 0, 1000 / 45, NULL); //45프레임
+	SetTimer(hWnd, 1, 1000 / 40, NULL); //wasd입력
 	Camera_V = XMLoadFloat3(&Camera_F);
 	Camera_LookAt = XMVectorSet(0, 0, 1, 0);
-	XMVECTOR target = XMVectorZero();
-	XMVECTOR up = XMVectorSet(0, 1, 0, 0);
-	Camera_M = XMMatrixLookAtLH(Camera_V, target, up);
+	Camera_M = XMMatrixLookAtLH(Camera_V, Camera_LookAt, up);
 	return;
 }
 
@@ -286,38 +307,39 @@ void handing_WM_PAINT(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	NewP = (HPEN)GetStockObject(WHITE_PEN);
 	OldP = (HPEN)SelectObject(hdc, NewP);
 
-	for (int i = 0; i < 8; i++)
-		CUBE.V1[i] = XMVector3TransformCoord(CUBE.V[i], Camera_M);
-
 	//6개의 면을 렌더링
 	for (int i = 0; i < 6; i++)
 	{
-		FLOAT X[4], Y[4];
+		//후면선별, 은면제거
+		XMVECTOR
+			v1 = XMVector3TransformCoord(CUBE.V[index[i][0]], Camera_M),
+			v2 = XMVector3TransformCoord(CUBE.V[index[i][1]], Camera_M),
+			v3 = XMVector3TransformCoord(CUBE.V[index[i][2]], Camera_M),
+			v4 = XMVector3TransformCoord(CUBE.V[index[i][3]], Camera_M);
+		XMVECTOR normal = XMVector3Cross(v1 - v2, v1 - v4);
+		if (XMVectorGetX(XMVector3Dot(normal, (v1 * 3 / 2) - (v2 / 2))) > 0) continue;
+
 		//면마다 있는 4개의 점과모서리를 렌더링
 		for (int j = 0; j < 4; j++)
 		{
+			XMVECTOR
+				v1 = XMVector3TransformCoord(CUBE.V[index[i][j]], Camera_M),
+				v2 = XMVector3TransformCoord(CUBE.V[index[i][(j + 1) == 4 ? 0 : j + 1]], Camera_M);
+
 			//2차원으로 점을 옮김
 			//카메라 = 원점과 화면사이의 거리를 DISTANCE로 놓음
 			//DISTANCE가 클수록 물체가 크게보임
-			X[j] = XMVectorGetX(CUBE.V1[index[i][j]]) * (FLOAT)DISTANCE / XMVectorGetZ(CUBE.V1[index[i][j]]) + 960;
-			Y[j] = XMVectorGetY(CUBE.V1[index[i][j]]) * (FLOAT)DISTANCE / XMVectorGetZ(CUBE.V1[index[i][j]]) + 540;
+			FLOAT
+				X1 = XMVectorGetX(v1) * (FLOAT)DISTANCE / XMVectorGetZ(v1) + 960,
+				Y1 = XMVectorGetY(v1) * (FLOAT)DISTANCE / XMVectorGetZ(v1) + 540,
+				X2 = XMVectorGetX(v2) * (FLOAT)DISTANCE / XMVectorGetZ(v2) + 960,
+				Y2 = XMVectorGetY(v2) * (FLOAT)DISTANCE / XMVectorGetZ(v2) + 540;
 
 			//점을 9개씩 찍는다
 			COLORREF C = RGB(255, 255, 255);
 			for (int i = -1; i < 2; i++)
 				for (int j = -1; j < 2; j++)
-					SetPixel(hdc, (int)X[j] + i, (int)Y[j] + j, C);
-
-			//INDEX를 조절해 하얀선분 길이조절
-			//INDEX가 클수록 길이가 길어짐
-			XMVECTOR V1 = (CUBE.V1[index[i][j]] - CUBE.V1[index[i][(j + 1) == 4 ? 0 : j + 1]]) / (FLOAT)INDEX + CUBE.V1[index[i][(j + 1) == 4 ? 0 : j + 1]];
-			XMVECTOR V2 = (CUBE.V1[index[i][(j + 1) == 4 ? 0 : j + 1]] - CUBE.V1[index[i][j]]) / (FLOAT)INDEX + CUBE.V1[index[i][j]];
-
-			FLOAT X1 = XMVectorGetX(V1) * (FLOAT)DISTANCE / XMVectorGetZ(V1) + 960;
-			FLOAT Y1 = XMVectorGetY(V1) * (FLOAT)DISTANCE / XMVectorGetZ(V1) + 540;
-
-			FLOAT X2 = XMVectorGetX(V2) * (FLOAT)DISTANCE / XMVectorGetZ(V2) + 960;
-			FLOAT Y2 = XMVectorGetY(V2) * (FLOAT)DISTANCE / XMVectorGetZ(V2) + 540;
+					SetPixel(hdc, (int)X1 + i, (int)Y1 + j, C);
 
 			MoveToEx(hdc, (int)X1, (int)Y1, NULL);
 			LineTo(hdc, (int)X2, (int)Y2);
@@ -326,7 +348,7 @@ void handing_WM_PAINT(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	SelectObject(hdc, OldP);
 	/* 상자 출력 끝! */
 
-	if (mouse_state)
+	if (lbutton)
 	{
 		NewP = CreatePen(PS_SOLID, 1, RGB(255, 255, 255));
 		OldP = (HPEN)SelectObject(hdc, NewP);
@@ -344,49 +366,32 @@ void handing_WM_PAINT(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return;
 }
 
-bool check_vertex(FLOAT  Y[4], FLOAT  X[4], const int i, const int a, const int b)
-{
-	FLOAT
-	Y1 = XMVectorGetY(CUBE.V1[index[i][a]]), Y2 = XMVectorGetY(CUBE.V1[index[i][b]]),
-	X1 = XMVectorGetX(CUBE.V1[index[i][a]]), X2 = XMVectorGetX(CUBE.V1[index[i][b]]);
-	if (Y1 <= Y2 && Y[a] > Y[b])
-		return true;
-	if (Y1 >= Y2 && Y[a] < Y[b])
-		return true;
-	if (X1 <= X2 && X[a] > X[b])
-		return true;
-	if (X1 >= X2 && X[a] < X[b])
-		return true;
-	return false;
-}
-
 void handing_WM_KEYDOWN(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (wParam)
 	{
 	case VK_ESCAPE:
-		DestroyWindow(hWnd);
+		QUIT(hWnd, uMsg, wParam, lParam);
 		break;
 	case VK_UP:
-		angle = 1;
-		Axis = XMVectorSet(1, 0, 0, 0);
-		state = true;
-		break;
+		Axis = XMVectorSet(1, 0, 0, 0); goto SET_ANGLE;
 	case VK_DOWN:
-		angle = 1;
-		Axis = XMVectorSet(-1, 0, 0, 0);
-		state = true;
-		break;
+		Axis = XMVectorSet(-1, 0, 0, 0); goto SET_ANGLE;
 	case VK_LEFT:
-		angle = 1;
-		Axis = XMVectorSet(0, -1, 0, 0);
-		state = true;
-		break;
+		Axis = XMVectorSet(0, -1, 0, 0); goto SET_ANGLE;
 	case VK_RIGHT:
+		Axis = XMVectorSet(0, 1, 0, 0); goto SET_ANGLE;
+	SET_ANGLE:
 		angle = 1;
-		Axis = XMVectorSet(0, 1, 0, 0);
-		state = true;
+		box_rotate = true;
 		break;
 	}
+	return;
+}
+
+void QUIT(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	KillTimer(hWnd, 0);
+	PostQuitMessage(0);
 	return;
 }
