@@ -4,25 +4,9 @@ static bool paint_trigger = false, lbutton = false, camera_rotate = false;
 static bool is_paused = true, is_gravity = true;
 /* trigger 변수 */
 
-static XMVECTOR up = XMVectorSet(0, -1, 0, 0);
-static XMVECTOR Camera_V = XMVectorSet(0, 0, -8000, 0);
-static XMVECTOR Camera_R = XMVectorSet(1, 0, 0, 0);
-static XMVECTOR Camera_LookAt = XMVectorSet(0, 0, 1, 0);
-static XMMATRIX Camera_M;
-static const FLOAT DPI = (float)0.1, SPEED = 500;
-/* 카메라관련 변수 */
-
-static original_CUBE_struct original_CUBE;
-static CUBE_struct CUBE;
-/* 물체의 정점들 */
-
-static int index[6][4] = { { 0,1,2,3 },{ 5,4,7,6 },{ 3,7,4,0 },{ 1,5,6,2 },{ 4,5,1,0 },{ 7,3,2,6 } };
-/* 시계방향 첨자 */
-
 void handling_WM_CREATE(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	for (int i = 0; i < 8; i++)
-		CUBE.V[i] = XMLoadFloat3(&(original_CUBE.F[i])) + XMVectorSet(0, (float)1000.000001, 0, 0);
+	setting();
 
 	SetTimer(hWnd, 0, 1000 / 45, (TIMERPROC)Paint_Trigger); //초당45번출력
 	SetTimer(hWnd, 1, 1000 / 50, (TIMERPROC)Box_Translation);
@@ -30,7 +14,6 @@ void handling_WM_CREATE(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	SetTimer(hWnd, 3, 1000 / 50, (TIMERPROC)Camera_Movement);
 	SetTimer(hWnd, 4, 1000 / 50, (TIMERPROC)Key_Check);
 
-	Camera_M = XMMatrixLookAtLH(Camera_V, Camera_LookAt, up);
 	return;
 }
 
@@ -51,15 +34,17 @@ void handling_WM_PAINT(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	OldP = (HPEN)SelectObject(hdc, NewP);
 	//6개의 면을 렌더링
 	for (int i = 0; i < 6; i++) {
-		//은면제거
+
 		XMVECTOR
 			v1 = XMVector3TransformCoord(CUBE.V[index[i][0]], Camera_M),
 			v2 = XMVector3TransformCoord(CUBE.V[index[i][1]], Camera_M),
 			v3 = XMVector3TransformCoord(CUBE.V[index[i][2]], Camera_M),
 			v4 = XMVector3TransformCoord(CUBE.V[index[i][3]], Camera_M);
 		XMVECTOR normal = XMVector3Cross(v1 - v2, v1 - v4);
-		if (XMVectorGetX(XMVector3Dot(normal, (v1 * 3 / 2) - (v2 / 2))) > 0) continue;
-		if (XMVectorGetZ(v1) < 0 || XMVectorGetZ(v2) < 0 || XMVectorGetZ(v3) < 0 || XMVectorGetZ(v4) < 0) continue;
+		if (XMVectorGetX(XMVector3Dot(normal, (v1 * 3 / 2) - (v2 / 2))) > 0)
+			continue;
+		if (XMVectorGetZ(v1) < 0 || XMVectorGetZ(v2) < 0 || XMVectorGetZ(v3) < 0 || XMVectorGetZ(v4) < 0)
+			continue;
 
 		for (int j = 0; j < 4; j++) {
 			XMVECTOR
@@ -113,17 +98,12 @@ void handling_WM_MOUSEMOVE(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			oldPx = Px; oldPy = Py;
 			LOG_print(TEXT("\r\n(오른드래그)"));
 		}
-		FLOAT Angle_x = XMConvertToRadians((oldPx - Px) * DPI);
-		FLOAT Angle_y = XMConvertToRadians((oldPy - Py) * DPI);
+		FLOAT Angle_x = XMConvertToRadians((oldPx - Px) * (float)0.1);
+		FLOAT Angle_y = XMConvertToRadians((oldPy - Py) * (float)0.1);
 		oldPx = Px; oldPy = Py;
 
-		XMMATRIX M = XMMatrixRotationAxis(up, Angle_x);
-		Camera_LookAt = XMVector3TransformCoord(Camera_LookAt, M);
-		Camera_R = XMVector3Cross(Camera_LookAt, up);
-		M = XMMatrixRotationAxis(Camera_R, Angle_y);
-		Camera_LookAt = XMVector3TransformCoord(Camera_LookAt, M);
+		camera_rotating(Angle_x, Angle_y);
 
-		Camera_M = XMMatrixLookAtLH(Camera_V, Camera_LookAt + Camera_V, up);
 		paint_trigger = true;
 		camera_rotate = true;
 	}
@@ -160,23 +140,31 @@ void handling_WM_DESTROY(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 void Box_Translation(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 {
 	static const XMVECTOR Up = XMVectorSet(0, 100, 0, 0);
-	XMMATRIX M = XMMatrixIdentity();
 
-	static bool T[2] = { false, false };
-	if (_key('U')) {
-		M = XMMatrixTranslationFromVector(Up);
-		if (!T[0])
-			LOG_print(TEXT("\r\n상승(U)"));
-		T[0] = true;
+	if (_key('U') || _key('J')) {
+		XMVECTOR V = XMVectorZero();
+		static bool T[2] = { false, false };
+		if (_key('U')) {
+			V = Up;
+			if (!T[0])
+				LOG_print(TEXT("\r\n상승(U)"));
+			T[0] = true;
+		}
+		else T[0] = false;
+		if (_key('J')) {
+			V = -1 * Up;
+			if (!T[1])
+				LOG_print(TEXT("\r\n하강(J)"));
+			T[1] = true;
+		}
+		else T[1] = false;
+
+		if (!is_bumped(V))
+			goto EXCEPTION;
+		paint_trigger = true;
 	}
-	else T[0] = false;
-	if (_key('J')) {
-		M = XMMatrixTranslationFromVector(-1 * Up);
-		if (!T[1])
-			LOG_print(TEXT("\r\n하강(J)"));
-		T[1] = true;
-	}
-	else T[1] = false;
+	EXCEPTION:
+
 	if (_key(VK_UP) || _key(VK_DOWN) || _key(VK_LEFT) || _key(VK_RIGHT)) {
 		XMVECTOR Axis = XMVectorSet(1, 0, 0, 0);
 		static bool T[4] = { false, false, false, false };
@@ -208,23 +196,12 @@ void Box_Translation(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 		}
 		else T[3] = false;
 
-		M = XMMatrixRotationAxis(Axis, XMConvertToRadians(1));
-		XMVECTOR Center = (CUBE.V[0] + CUBE.V[6]) / 2;
-		for (int i = 0; i < 8; i++)
-			CUBE.V[i] = XMVector3TransformCoord(CUBE.V[i] - Center, M) + Center;
+		if (!is_bumped(XMMatrixRotationAxis(Axis, XMConvertToRadians(1))))
+			goto EXCEPTION1;
 		paint_trigger = true;
-		return;
 	}
-	if (XMMatrixIsIdentity(M))
-		return;
+	EXCEPTION1:
 
-	XMVECTOR Center = (XMVector3TransformCoord(CUBE.V[0], M) + XMVector3TransformCoord(CUBE.V[6], M)) / 2;
-	if (XMVectorGetY(Center) < -0.1)
-		return;
-
-	for (int i = 0; i < 8; i++)
-		CUBE.V[i] = XMVector3TransformCoord(CUBE.V[i], M);
-	paint_trigger = true;
 	return;
 }
 
@@ -237,15 +214,12 @@ void Physic_Effects(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 		CUBE.Veloc += T * (is_gravity ? g + CUBE.Accel : XMVectorZero());
 		XMVECTOR V = CUBE.Veloc * T;
 
-		XMVECTOR Center = (CUBE.V[0] + CUBE.V[6]) / 2 + V;
-		if (XMVectorGetY(Center) < 0) { //땅에 부딪힘
+		if (!is_bumped(V)) { //땅에 부딪힘
 			CUBE.Veloc = XMVectorSetY(CUBE.Veloc, (float)-1 * XMVectorGetY(CUBE.Veloc));
 			LOG_print(TEXT("\r\n땅에 부딫힘!"));
 			return;
 		}
 
-		for (int i = 0; i < 8; i++)
-			CUBE.V[i] += V;
 		paint_trigger = true;
 		T = false;
 	}
@@ -265,28 +239,28 @@ void Camera_Movement(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 		if (!T[0])
 			LOG_print(TEXT("\r\n전진(W)"));
 		T[0] = true;
-		Camera_V += Camera_LookAt * SPEED;
+		Camera_V += Camera_LookAt * 500;
 	}
 	else T[0] = false;
 	if (_key('A')) {
 		if (!T[1])
 			LOG_print(TEXT("\r\n왼쪽(A)"));
 		T[1] = true;
-		Camera_V += Camera_R * SPEED;
+		Camera_V += Camera_R * 500;
 	}
 	else T[1] = false;
 	if (_key('S')) {
 		if (!T[2])
 			LOG_print(TEXT("\r\n후진(S)"));
 		T[2] = true;
-		Camera_V += Camera_LookAt * -1 * SPEED;
+		Camera_V += Camera_LookAt * -1 * 500;
 	}
 	else T[2] = false;
 	if (_key('D')) {
 		if (!T[3])
 			LOG_print(TEXT("\r\n오른쪽(D)"));
 		T[3] = true;
-		Camera_V += Camera_R * -1 * SPEED;
+		Camera_V += Camera_R * -1 * 500;
 	}
 	else T[3] = false;
 	Camera_M = XMMatrixLookAtLH(Camera_V, Camera_LookAt + Camera_V, up);

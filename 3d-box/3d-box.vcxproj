@@ -118,6 +118,7 @@
     <ClCompile Include="Log_win.cpp" />
     <ClCompile Include="Main_win.cpp" />
     <ClCompile Include="Handling.cpp" />
+    <ClCompile Include="physics.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="declarations.h" />

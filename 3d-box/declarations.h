@@ -146,6 +146,30 @@ void handling_WM_RBUTTONUP(HWND, UINT, WPARAM, LPARAM);
 void handling_WM_DESTROY(HWND, UINT, WPARAM, LPARAM);
 /* 메세지핸들링 */
 
+bool is_bumped(XMVECTOR);
+bool is_bumped(XMMATRIX);
+void camera_rotating(FLOAT, FLOAT);
+void setting();
+bool is_hidden(int);
+void point_coor(int, POINT*);
+
+static XMVECTOR up = XMVectorSet(0, -1, 0, 0);
+static XMVECTOR Camera_V = XMVectorSet(0, 0, -8000, 0);
+static XMVECTOR Camera_R = XMVectorSet(1, 0, 0, 0);
+static XMVECTOR Camera_LookAt = XMVectorSet(0, 0, 1, 0);
+static XMMATRIX Camera_M;
+/* 카메라관련 변수 */
+
+static original_CUBE_struct original_CUBE;
+/* 물체의 정점들 */
+
+static int index[6][4] = { { 0,1,2,3 },{ 5,4,7,6 },{ 3,7,4,0 },{ 1,5,6,2 },{ 4,5,1,0 },{ 7,3,2,6 } };
+/* 시계방향 첨자 */
+
+static CUBE_struct CUBE;
+
+/* 계산 관련 */
+
 FLOAT inline abs(FLOAT F) { return F < 0 ? F * -1 : F; }
 int inline _key(char C) { return GetAsyncKeyState(C) & 0x8000; }
 int inline _key1(char C) { return (GetAsyncKeyState(C) & 0x8001) == 0x8001; }
