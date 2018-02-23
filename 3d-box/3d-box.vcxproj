@@ -114,11 +114,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Fov_win.cpp" />
     <ClCompile Include="Log_win.cpp" />
     <ClCompile Include="Main_win.cpp" />
+    <ClCompile Include="Handling.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="defines.h" />
+    <ClInclude Include="declarations.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

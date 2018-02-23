@@ -89,6 +89,8 @@
 #include <process.h>
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 using namespace DirectX;
 using namespace DirectX::PackedVector;
@@ -117,48 +119,41 @@ struct CUBE_struct {
 	XMVECTOR Accel = XMVectorZero();
 	XMVECTOR Veloc = XMVectorZero();
 };
-
-static original_CUBE_struct original_CUBE;
-static CUBE_struct CUBE;
-
-static int index[6][4] = { { 0,1,2,3 },{ 5,4,7,6 },{ 3,7,4,0 },{ 1,5,6,2 },{ 4,5,1,0 },{ 7,3,2,6 } };
-/* 시계방향 */
-
-static XMVECTOR up = XMVectorSet(0, -1, 0, 0),
-Camera_V = XMVectorSet(0, 0, -8000, 0),
-Camera_R = XMVectorSet(1, 0, 0, 0),
-Camera_LookAt = XMVectorSet(0, 0, 1, 0);
-static XMMATRIX Camera_M;
-static FLOAT FOV = 90, DPI = (float)0.1, SPEED = 500,
-Angle_x, Angle_y;
-/* 카메라관련 변수 */
-
-static bool paint_trigger = false, lbutton = false, camera_rotate = false,
-is_paused = true, is_gravity = true;
-/* trigger 변수 */
-
-static HINSTANCE g_inst;
+/* 구조체 정의 */
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-void handing_WM_CREATE(HWND, UINT, WPARAM, LPARAM);
-void handing_WM_PAINT(HWND, UINT, WPARAM, LPARAM);
-void handing_WM_MOUSEMOVE(HWND, UINT, WPARAM, LPARAM);
+/* 프로시저 */
+
+void LOG_print(LPCTSTR);
+void LOG_print(int);
+void LOG_print(float);
+void LOG_setting(HWND, HINSTANCE);
+void LOG_destroy();
+/* log창 관련 */
+
+void FOV_setting(HWND, HINSTANCE);
+void FOV_handling(WPARAM, LPARAM);
+float FOV_get();
+void FOV_destroy();
+bool FOV_paint();
+/* fov컨트롤 관련 */
+
+void handling_WM_CREATE(HWND, UINT, WPARAM, LPARAM);
+void handling_WM_PAINT(HWND, UINT, WPARAM, LPARAM);
+void handling_WM_MOUSEMOVE(HWND, UINT, WPARAM, LPARAM);
+void handling_WM_LBUTTONUP(HWND, UINT, WPARAM, LPARAM);
+void handling_WM_RBUTTONUP(HWND, UINT, WPARAM, LPARAM);
+void handling_WM_DESTROY(HWND, UINT, WPARAM, LPARAM);
+/* 메세지핸들링 */
+
+FLOAT inline abs(FLOAT F) { return F < 0 ? F * -1 : F; }
+int inline _key(char C) { return GetAsyncKeyState(C) & 0x8000; }
+int inline _key1(char C) { return (GetAsyncKeyState(C) & 0x8001) == 0x8001; }
+/* 인라인함수 */
+
 void Box_Translation(HWND, UINT, UINT_PTR, DWORD);
 void Physic_Effects(HWND, UINT, UINT_PTR, DWORD);
 void Camera_Movement(HWND, UINT, UINT_PTR, DWORD);
 void Paint_Trigger(HWND, UINT, UINT_PTR, DWORD);
-void Key_handling(HWND, MSG);
-void QUIT(HWND, UINT, WPARAM, LPARAM);
-FLOAT inline abs(FLOAT F) { return F < 0 ? F * -1 : F; }
-int inline _key(char C) { return GetAsyncKeyState(C) & 0x8000; }
-/* main창 관련 */
-
-static bool LOG_paint_trigger = false;
-
-void LOG_Main(void*);
-LRESULT CALLBACK LOG_Proc(HWND, UINT, WPARAM, LPARAM);
-void LOG_WM_CREATE(HWND, UINT, WPARAM, LPARAM);
-void LOG_WM_PAINT(HWND, UINT, WPARAM, LPARAM);
-void LOG_QUIT(HWND, UINT, WPARAM, LPARAM);
-void Check_Trigger(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
-/* log창 관련 */
+void Key_Check(HWND, UINT, UINT_PTR, DWORD);
+/* Timer핸들링 */
