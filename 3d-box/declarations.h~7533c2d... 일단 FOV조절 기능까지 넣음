@@ -118,7 +118,6 @@ struct CUBE_struct {
 	XMVECTOR V[8] = { NULL, }; //물체내부를 원점으로 잡은상태
 	XMVECTOR Accel = XMVectorZero();
 	XMVECTOR Veloc = XMVectorZero();
-	XMMATRIX Torque = XMMatrixIdentity();
 };
 /* 구조체 정의 */
 
@@ -138,19 +137,6 @@ float FOV_get();
 void FOV_destroy();
 bool FOV_paint();
 /* fov컨트롤 관련 */
-
-bool is_bumped(XMVECTOR);
-bool is_bumped(XMMATRIX);
-void camera_rotating(FLOAT, FLOAT);
-void setting();
-bool is_hidden(int);
-void physic_calc(bool);
-void physic_reset();
-void front(); void rear(); void left(); void right();
-void update_matrix();
-void get_point(int, int, POINT&, POINT&);
-XMVECTOR get_transformed(int, int);
-/* 물체 계산 관련 */
 
 void handling_WM_CREATE(HWND, UINT, WPARAM, LPARAM);
 void handling_WM_PAINT(HWND, UINT, WPARAM, LPARAM);

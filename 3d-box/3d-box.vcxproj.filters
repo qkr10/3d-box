@@ -27,7 +27,7 @@
     <ClCompile Include="Fov_win.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="physics.cpp">
+    <ClCompile Include="calc.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

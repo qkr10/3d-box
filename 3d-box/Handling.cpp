@@ -13,7 +13,6 @@ void handling_WM_CREATE(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	SetTimer(hWnd, 2, 1000 / 50, (TIMERPROC)Physic_Effects);
 	SetTimer(hWnd, 3, 1000 / 50, (TIMERPROC)Camera_Movement);
 	SetTimer(hWnd, 4, 1000 / 50, (TIMERPROC)Key_Check);
-
 	return;
 }
 
@@ -34,38 +33,21 @@ void handling_WM_PAINT(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	OldP = (HPEN)SelectObject(hdc, NewP);
 	//6∞≥¿« ∏È¿ª ∑ª¥ı∏µ
 	for (int i = 0; i < 6; i++) {
-
-		XMVECTOR
-			v1 = XMVector3TransformCoord(CUBE.V[index[i][0]], Camera_M),
-			v2 = XMVector3TransformCoord(CUBE.V[index[i][1]], Camera_M),
-			v3 = XMVector3TransformCoord(CUBE.V[index[i][2]], Camera_M),
-			v4 = XMVector3TransformCoord(CUBE.V[index[i][3]], Camera_M);
-		XMVECTOR normal = XMVector3Cross(v1 - v2, v1 - v4);
-		if (XMVectorGetX(XMVector3Dot(normal, (v1 * 3 / 2) - (v2 / 2))) > 0)
-			continue;
-		if (XMVectorGetZ(v1) < 0 || XMVectorGetZ(v2) < 0 || XMVectorGetZ(v3) < 0 || XMVectorGetZ(v4) < 0)
-			continue;
+		//¿∫∏È¡¶∞≈
+		if (is_hidden(i)) continue;
 
 		for (int j = 0; j < 4; j++) {
-			XMVECTOR
-				v1 = XMVector3TransformCoord(CUBE.V[index[i][j]], Camera_M),
-				v2 = XMVector3TransformCoord(CUBE.V[index[i][(j + 1) == 4 ? 0 : j + 1]], Camera_M);
-
-			//2¬˜ø¯¿∏∑Œ ¡°¿ª ø≈±Ë
-			FLOAT
-				X1 = (XMVectorGetX(v1) / XMVectorGetZ(v1) / tanf(FOV_get() / 2)) * 1000 + 960,
-				Y1 = (XMVectorGetY(v1) / XMVectorGetZ(v1) / tanf(FOV_get() / 2)) * 1000 + 540,
-				X2 = (XMVectorGetX(v2) / XMVectorGetZ(v2) / tanf(FOV_get() / 2)) * 1000 + 960,
-				Y2 = (XMVectorGetY(v2) / XMVectorGetZ(v2) / tanf(FOV_get() / 2)) * 1000 + 540;
+			POINT P1, P2;
+			get_point(i, j, P1, P2);
 
 			//¡°¿ª 25∞≥æø ¬Ô¥¬¥Ÿ
 			COLORREF C = RGB(255, 255, 255);
 			for (int i = -2; i < 3; i++)
 				for (int j = -2; j < 3; j++)
-					SetPixel(hdc, (int)X1 + i, (int)Y1 + j, C);
+					SetPixel(hdc, (int)P1.x + i, (int)P1.y + j, C);
 
-			MoveToEx(hdc, (int)X1, (int)Y1, NULL);
-			LineTo(hdc, (int)X2, (int)Y2);
+			MoveToEx(hdc, (int)P1.x, (int)P1.y, NULL);
+			LineTo(hdc, (int)P2.x, (int)P2.y);
 		}
 	}
 	SelectObject(hdc, OldP);
@@ -163,7 +145,7 @@ void Box_Translation(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 			goto EXCEPTION;
 		paint_trigger = true;
 	}
-	EXCEPTION:
+EXCEPTION:
 
 	if (_key(VK_UP) || _key(VK_DOWN) || _key(VK_LEFT) || _key(VK_RIGHT)) {
 		XMVECTOR Axis = XMVectorSet(1, 0, 0, 0);
@@ -200,32 +182,22 @@ void Box_Translation(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 			goto EXCEPTION1;
 		paint_trigger = true;
 	}
-	EXCEPTION1:
+EXCEPTION1:
 
 	return;
 }
 
 void Physic_Effects(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 {
-	static const XMVECTOR g = XMVectorSet(0, -9800, 0, 0);
 	static bool T = false;
 	if (!is_paused) {
-		FLOAT T = 1 / (float)50;
-		CUBE.Veloc += T * (is_gravity ? g + CUBE.Accel : XMVectorZero());
-		XMVECTOR V = CUBE.Veloc * T;
-
-		if (!is_bumped(V)) { //∂•ø° ∫Œµ˙»˚
-			CUBE.Veloc = XMVectorSetY(CUBE.Veloc, (float)-1 * XMVectorGetY(CUBE.Veloc));
-			LOG_print(TEXT("\r\n∂•ø° ∫ŒãH»˚!"));
-			return;
-		}
-
-		paint_trigger = true;
+		physic_calc(is_gravity);
 		T = false;
+		paint_trigger = true;
 	}
 	else {
 		if (!T)
-			CUBE.Veloc = CUBE.Accel = XMVectorZero();
+			physic_reset();
 		T = true;
 	}
 	return;
@@ -239,31 +211,31 @@ void Camera_Movement(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 		if (!T[0])
 			LOG_print(TEXT("\r\n¿¸¡¯(W)"));
 		T[0] = true;
-		Camera_V += Camera_LookAt * 500;
+		front();
 	}
 	else T[0] = false;
 	if (_key('A')) {
 		if (!T[1])
 			LOG_print(TEXT("\r\nøﬁ¬ (A)"));
 		T[1] = true;
-		Camera_V += Camera_R * 500;
+		left();
 	}
 	else T[1] = false;
 	if (_key('S')) {
 		if (!T[2])
 			LOG_print(TEXT("\r\n»ƒ¡¯(S)"));
 		T[2] = true;
-		Camera_V += Camera_LookAt * -1 * 500;
+		rear();
 	}
 	else T[2] = false;
 	if (_key('D')) {
 		if (!T[3])
 			LOG_print(TEXT("\r\nø¿∏•¬ (D)"));
 		T[3] = true;
-		Camera_V += Camera_R * -1 * 500;
+		right();
 	}
 	else T[3] = false;
-	Camera_M = XMMatrixLookAtLH(Camera_V, Camera_LookAt + Camera_V, up);
+	update_matrix();
 	paint_trigger = true;
 	return;
 }
