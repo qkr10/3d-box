@@ -7,31 +7,34 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine
 
 	WNDCLASSEX wc;
 	wc.cbSize = sizeof(WNDCLASSEX);
-	wc.style = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW | CS_PARENTDC;
+	wc.style = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
 	wc.lpfnWndProc = WndProc;
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
 	wc.hInstance = hInstance;
 	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = CreateSolidBrush(0);
+	wc.hbrBackground = NULL;
 	wc.lpszMenuName = NULL;
 	wc.lpszClassName = ClassName;
 	wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
 	RegisterClassEx(&wc);
 
-	HWND hWnd = CreateWindowW(ClassName, Title, WS_CLIPCHILDREN | WS_BORDER | WS_MINIMIZEBOX, 0, 0, 1920, 1080, NULL, NULL, hInstance, NULL);
+	HWND hWnd = CreateWindowW(ClassName, Title, WS_SIZEBOX | WS_CLIPCHILDREN | WS_BORDER | WS_MINIMIZEBOX, 0, 0, 1000, 950, NULL, NULL, hInstance, NULL);
 	if (!hWnd) return FALSE;
 
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
 
+	LOG_setting(hWnd, hInstance);
+	FOV_setting(hWnd, hInstance);
+	LINE_setting(hWnd, hInstance);
+
 	MSG msg = { 0 };
-	while (GetMessage(&msg, hWnd, 0, 0) != 0) {
-		if (EDIT_msg(msg)) {
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
+	while (GetMessage(&msg, hWnd, 0, 0) != 0)
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
 	}
 	return (int)msg.wParam;
 }
@@ -55,14 +58,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_RBUTTONUP:
 		handling_WM_RBUTTONUP(hWnd, uMsg, wParam, lParam);
 		break;
+	case WM_SIZE:
+		handling_WM_SIZE(hWnd, uMsg, wParam, lParam);
+		break;
 	case WM_DESTROY:
 		handling_WM_DESTROY(hWnd, uMsg, wParam, lParam);
 		break;
-	case WM_COMMAND:
-		handling_WM_COMMAND(hWnd, uMsg, wParam, lParam);
-		break;
 	case WM_HSCROLL:
-		FOV_handling(wParam, lParam);
+		handling_WM_HSCROLL(hWnd, uMsg, wParam, lParam);
 		break;
 	default:
 		return DefWindowProc(hWnd, uMsg, wParam, lParam);

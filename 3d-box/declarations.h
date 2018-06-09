@@ -81,22 +81,21 @@
 =                                                         %                               ::::::::
 =                                                         %                                       ::::::::
 =                                                         %                                               :
+16/9 ~ -16/9
 */
 
 #include <Windows.h>
 #include <Windowsx.h>
-#include <CommCtrl.h>
 #include <process.h>
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <process.h>
 #include <vector>
-#include "resource.h"
 
 using namespace DirectX;
 using namespace DirectX::PackedVector;
+using namespace std;
 
 //앞면 시계방향		:0123
 //뒷면 시계방향		:5476
@@ -116,38 +115,46 @@ struct original_CUBE_struct {
 		{ (FLOAT)-1000, (FLOAT)-1000, (FLOAT)1000 } };
 	//8개의 점의 좌표
 };
-
 struct CUBE_struct {
 	XMVECTOR V[8] = { NULL, }; //물체내부를 원점으로 잡은상태
 	XMVECTOR Accel = XMVectorZero();
 	XMVECTOR Veloc = XMVectorZero();
+	XMMATRIX Torque = XMMatrixIdentity();
 };
-/* 구조체 정의 */
+typedef vector<XMVECTOR> VV;
+typedef vector<POINT> VP;
+/* 타입 정의 */
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-/* 프로시저 */
+/* 메시지 프로시저 */
+
+#define LOG_id 100
+#define FOV_text_id 101
+#define FOV_id 102
+#define LINE_text_id 111
+#define LINE_id 112
+/* 상수 정의 */
 
 void LOG_print(LPCTSTR);
 void LOG_print(int);
 void LOG_print(float);
 void LOG_setting(HWND, HINSTANCE);
-void LOG_initialize(void*);
 void LOG_destroy();
 /* log창 관련 */
 
 void FOV_setting(HWND, HINSTANCE);
 void FOV_handling(WPARAM, LPARAM);
-float FOV_get();
+FLOAT FOV_get();
 void FOV_destroy();
 bool FOV_paint();
 /* fov컨트롤 관련 */
 
-void EDIT_setting(HWND, WPARAM);
-void EDIT_setting(HWND, HINSTANCE);
-LRESULT CALLBACK EDIT_proc(HWND, UINT, WPARAM, LPARAM);
-bool EDIT_msg(MSG&);
-void EDIT_destroy();
-/* 물체관리창 관련 */
+void LINE_setting(HWND, HINSTANCE);
+void LINE_destroy();
+void LINE_handling(WPARAM, LPARAM);
+int LINE_NUM_get();
+bool LINE_paint();
+/* 빗금개수 관련 */
 
 bool is_bumped(XMVECTOR);
 bool is_bumped(XMMATRIX);
@@ -158,8 +165,10 @@ void physic_calc(bool);
 void physic_reset();
 void front(); void rear(); void left(); void right();
 void update_matrix();
-void get_point(int, int, POINT&, POINT&);
+XMVECTOR get_point(int, int);
 XMVECTOR get_transformed(int, int);
+void get_line(VV&, VV&);
+void set_display(RECT&);
 /* 물체 계산 관련 */
 
 void handling_WM_CREATE(HWND, UINT, WPARAM, LPARAM);
@@ -167,12 +176,15 @@ void handling_WM_PAINT(HWND, UINT, WPARAM, LPARAM);
 void handling_WM_MOUSEMOVE(HWND, UINT, WPARAM, LPARAM);
 void handling_WM_LBUTTONUP(HWND, UINT, WPARAM, LPARAM);
 void handling_WM_RBUTTONUP(HWND, UINT, WPARAM, LPARAM);
+void handling_WM_SIZE(HWND, UINT, WPARAM, LPARAM);
 void handling_WM_DESTROY(HWND, UINT, WPARAM, LPARAM);
-void handling_WM_COMMAND(HWND, UINT, WPARAM, LPARAM);
+void handling_WM_HSCROLL(HWND, UINT, WPARAM, LPARAM);
 /* 메세지핸들링 */
 
 int inline _key(char C) { return GetAsyncKeyState(C) & 0x8000; }
 int inline _key1(char C) { return (GetAsyncKeyState(C) & 0x8001) == 0x8001; }
+POINT inline vtop(XMVECTOR& V) { return { (LONG)XMVectorGetX(V), (LONG)XMVectorGetY(V) }; }
+void inline vvtovp(VV& V, VP& P) { for each (XMVECTOR var in V) P.push_back(vtop(var)); }
 /* 인라인함수 */
 
 void Box_Translation(HWND, UINT, UINT_PTR, DWORD);

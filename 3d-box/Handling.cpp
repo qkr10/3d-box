@@ -6,11 +6,7 @@ static bool is_paused = true, is_gravity = true;
 
 void handling_WM_CREATE(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	HINSTANCE hInstance = (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE);
 	setting();
-	LOG_setting(hWnd, hInstance);
-	FOV_setting(hWnd, hInstance);
-	EDIT_setting(hWnd, hInstance);
 
 	SetTimer(hWnd, 0, 1000 / 45, (TIMERPROC)Paint_Trigger); //초당45번출력
 	SetTimer(hWnd, 1, 1000 / 50, (TIMERPROC)Box_Translation);
@@ -40,18 +36,32 @@ void handling_WM_PAINT(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		//은면제거
 		if (is_hidden(i)) continue;
 
-		for (int j = 0; j < 4; j++) {
-			POINT P1, P2;
-			get_point(i, j, P1, P2);
+		VV dots;
+		for (int j = 0; j < 4; j++)
+			dots.push_back(get_point(i, j));
 
+		VP dot;
+		vvtovp(dots, dot);
+		for (int j = 0; j < 4; j++) {
+			int jj = j + 1 == 4 ? 0 : j + 1;
 			//점을 25개씩 찍는다
 			COLORREF C = RGB(255, 255, 255);
 			for (int i = -2; i < 3; i++)
-				for (int j = -2; j < 3; j++)
-					SetPixel(hdc, (int)P1.x + i, (int)P1.y + j, C);
+				for (int k = -2; k < 3; k++)
+					SetPixel(hdc, (int)dot[j].x + i, (int)dot[j].y + k, C);
 
-			MoveToEx(hdc, (int)P1.x, (int)P1.y, NULL);
-			LineTo(hdc, (int)P2.x, (int)P2.y);
+			MoveToEx(hdc, (int)dot[j].x, (int)dot[j].y, NULL);
+			LineTo(hdc, (int)dot[jj].x, (int)dot[jj].y);
+		}
+
+		VV lines; VP line;
+		get_line(dots, lines);
+		vvtovp(lines, line);
+		int k = 0;
+		while (k < line.size())
+		{
+			MoveToEx(hdc, (int)line[k].x, (int)line[k].y, NULL); k++;
+			LineTo(hdc, (int)line[k].x, (int)line[k].y); k++;
 		}
 	}
 	SelectObject(hdc, OldP);
@@ -108,11 +118,20 @@ void handling_WM_RBUTTONUP(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return;
 }
 
+void handling_WM_SIZE(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	RECT R;
+	GetClientRect(hWnd, &R);
+	set_display(R);
+	paint_trigger = true;
+	return;
+}
+
 void handling_WM_DESTROY(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	LOG_destroy();
 	FOV_destroy();
-	EDIT_destroy();
+	LINE_destroy();
 	KillTimer(hWnd, 0);
 	KillTimer(hWnd, 1);
 	KillTimer(hWnd, 2);
@@ -123,12 +142,24 @@ void handling_WM_DESTROY(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return;
 }
 
-void handling_WM_COMMAND(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+void handling_WM_HSCROLL(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	EDIT_setting(hWnd, wParam);
+	switch ((int)GetMenu((HWND)lParam))
+	{
+	case FOV_id:
+		FOV_handling(wParam, lParam);
+		break;
+	case LINE_id:
+		LINE_handling(wParam, lParam);
+		break;
+	}
 	return;
 }
+/************************/
+/*                      */
 /* 메세지 핸들링 함수들 */
+/*                      */
+/************************/
 
 void Box_Translation(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 {
@@ -253,7 +284,7 @@ void Camera_Movement(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 
 void Paint_Trigger(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 {
-	if (!paint_trigger && !FOV_paint())
+	if (!(paint_trigger || FOV_paint() || LINE_paint()))
 		return;
 	InvalidateRect(hWnd, NULL, true);
 	paint_trigger = false;
@@ -276,4 +307,8 @@ void Key_Check(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 	}
 	return;
 }
+/************************/
+/*                      */
 /* 타이머 핸들링 함수들 */
+/*                      */
+/************************/
