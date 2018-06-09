@@ -6,10 +6,10 @@ static HWND FOV_hWnd, FOV_hWnd1;
 
 void FOV_setting(HWND hWnd, HINSTANCE hInst)
 {
-	FOV_hWnd1 = CreateWindow(TEXT("static"), TEXT("FOV 조절↓"), WS_CHILD | WS_VISIBLE,
-		10, 840, 80, 20, hWnd, (HMENU)102, hInst, NULL);
-	FOV_hWnd = CreateWindow(TEXT("scrollbar"), NULL, WS_CHILD | WS_VISIBLE | SBS_HORZ,
-		10, 870, 200, 20, hWnd, (HMENU)101, hInst, NULL);
+	FOV_hWnd1 = CreateWindow(WC_STATIC, TEXT("FOV 조절↓"), WS_CHILD | WS_VISIBLE,
+		10, 840, 80, 20, hWnd, (HMENU)52, hInst, NULL);
+	FOV_hWnd = CreateWindow(WC_SCROLLBAR, NULL, WS_CHILD | WS_VISIBLE | SBS_HORZ,
+		10, 870, 200, 20, hWnd, (HMENU)51, hInst, NULL);
 	SetScrollRange(FOV_hWnd, SB_CTL, 0, 1000, false);
 	SetScrollPos(FOV_hWnd, SB_CTL, 500, true);
 	return;

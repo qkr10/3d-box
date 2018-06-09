@@ -6,7 +6,11 @@ static bool is_paused = true, is_gravity = true;
 
 void handling_WM_CREATE(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	HINSTANCE hInstance = (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE);
 	setting();
+	LOG_setting(hWnd, hInstance);
+	FOV_setting(hWnd, hInstance);
+	EDIT_setting(hWnd, hInstance);
 
 	SetTimer(hWnd, 0, 1000 / 45, (TIMERPROC)Paint_Trigger); //초당45번출력
 	SetTimer(hWnd, 1, 1000 / 50, (TIMERPROC)Box_Translation);
@@ -108,6 +112,7 @@ void handling_WM_DESTROY(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	LOG_destroy();
 	FOV_destroy();
+	EDIT_destroy();
 	KillTimer(hWnd, 0);
 	KillTimer(hWnd, 1);
 	KillTimer(hWnd, 2);
@@ -115,6 +120,12 @@ void handling_WM_DESTROY(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	KillTimer(hWnd, 4);
 	PostQuitMessage(0);
 	ExitProcess(0);
+	return;
+}
+
+void handling_WM_COMMAND(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	EDIT_setting(hWnd, wParam);
 	return;
 }
 /* 메세지 핸들링 함수들 */

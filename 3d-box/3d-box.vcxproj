@@ -117,12 +117,17 @@
   <ItemGroup>
     <ClCompile Include="calc.cpp" />
     <ClCompile Include="Fov_win.cpp" />
+    <ClCompile Include="Edit_win.cpp" />
     <ClCompile Include="Log_win.cpp" />
     <ClCompile Include="Main_win.cpp" />
     <ClCompile Include="Handling.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="declarations.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

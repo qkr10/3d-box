@@ -4,8 +4,15 @@ static HWND LOG_hWnd;
 
 void LOG_setting(HWND hWnd, HINSTANCE g_inst)
 {
-	LOG_hWnd = CreateWindow(TEXT("edit"), TEXT("Log"), WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY,
-		10, 900, 200, 130, hWnd, (HMENU)100, g_inst, NULL);
+	LOG_hWnd = CreateWindow(WC_EDIT, TEXT("Log"), WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY,
+		10, 900, 200, 130, hWnd, (HMENU)50, g_inst, NULL);
+	_beginthread(LOG_initialize, 0, NULL);
+	return;
+}
+
+void LOG_initialize(void* param)
+{
+	Sleep(1); LOG_print(TEXT(""));
 	return;
 }
 

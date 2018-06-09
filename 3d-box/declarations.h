@@ -81,16 +81,19 @@
 =                                                         %                               ::::::::
 =                                                         %                                       ::::::::
 =                                                         %                                               :
-시야각(tan) : 16/9 ~ -16/9
 */
 
 #include <Windows.h>
 #include <Windowsx.h>
+#include <CommCtrl.h>
 #include <process.h>
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <process.h>
+#include <vector>
+#include "resource.h"
 
 using namespace DirectX;
 using namespace DirectX::PackedVector;
@@ -118,7 +121,6 @@ struct CUBE_struct {
 	XMVECTOR V[8] = { NULL, }; //물체내부를 원점으로 잡은상태
 	XMVECTOR Accel = XMVectorZero();
 	XMVECTOR Veloc = XMVectorZero();
-	XMMATRIX Torque = XMMatrixIdentity();
 };
 /* 구조체 정의 */
 
@@ -129,6 +131,7 @@ void LOG_print(LPCTSTR);
 void LOG_print(int);
 void LOG_print(float);
 void LOG_setting(HWND, HINSTANCE);
+void LOG_initialize(void*);
 void LOG_destroy();
 /* log창 관련 */
 
@@ -138,6 +141,13 @@ float FOV_get();
 void FOV_destroy();
 bool FOV_paint();
 /* fov컨트롤 관련 */
+
+void EDIT_setting(HWND, WPARAM);
+void EDIT_setting(HWND, HINSTANCE);
+LRESULT CALLBACK EDIT_proc(HWND, UINT, WPARAM, LPARAM);
+bool EDIT_msg(MSG&);
+void EDIT_destroy();
+/* 물체관리창 관련 */
 
 bool is_bumped(XMVECTOR);
 bool is_bumped(XMMATRIX);
@@ -158,9 +168,9 @@ void handling_WM_MOUSEMOVE(HWND, UINT, WPARAM, LPARAM);
 void handling_WM_LBUTTONUP(HWND, UINT, WPARAM, LPARAM);
 void handling_WM_RBUTTONUP(HWND, UINT, WPARAM, LPARAM);
 void handling_WM_DESTROY(HWND, UINT, WPARAM, LPARAM);
+void handling_WM_COMMAND(HWND, UINT, WPARAM, LPARAM);
 /* 메세지핸들링 */
 
-FLOAT inline abs(FLOAT F) { return F < 0 ? F * -1 : F; }
 int inline _key(char C) { return GetAsyncKeyState(C) & 0x8000; }
 int inline _key1(char C) { return (GetAsyncKeyState(C) & 0x8001) == 0x8001; }
 /* 인라인함수 */
