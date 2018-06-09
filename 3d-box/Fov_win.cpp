@@ -2,14 +2,14 @@
 
 static FLOAT FOV = 90;
 static bool paint_tri = false;
-static HWND FOV_hWnd, FOV_hWnd1;
+static HWND FOV_hWnd, FOV_text_hWnd;
 
 void FOV_setting(HWND hWnd, HINSTANCE hInst)
 {
-	FOV_hWnd1 = CreateWindow(TEXT("static"), TEXT("FOV 조절↓"), WS_CHILD | WS_VISIBLE,
-		10, 840, 80, 20, hWnd, (HMENU)102, hInst, NULL);
+	FOV_text_hWnd = CreateWindow(TEXT("static"), TEXT("FOV 조절↓"), WS_CHILD | WS_VISIBLE,
+		10, 10, 80, 20, hWnd, (HMENU)FOV_text_id, hInst, NULL);
 	FOV_hWnd = CreateWindow(TEXT("scrollbar"), NULL, WS_CHILD | WS_VISIBLE | SBS_HORZ,
-		10, 870, 200, 20, hWnd, (HMENU)101, hInst, NULL);
+		10, 40, 200, 20, hWnd, (HMENU)FOV_id, hInst, NULL);
 	SetScrollRange(FOV_hWnd, SB_CTL, 0, 1000, false);
 	SetScrollPos(FOV_hWnd, SB_CTL, 500, true);
 	return;
@@ -53,13 +53,12 @@ bool FOV_paint()
 		paint_tri = false;
 		return true;
 	}
-	else
-		return false;
+	return false;
 }
 
 void FOV_destroy()
 {
 	DestroyWindow(FOV_hWnd);
-	DestroyWindow(FOV_hWnd1);
+	DestroyWindow(FOV_text_hWnd);
 	return;
 }

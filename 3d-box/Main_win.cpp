@@ -14,13 +14,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine
 	wc.hInstance = hInstance;
 	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = CreateSolidBrush(0);
+	wc.hbrBackground = NULL;
 	wc.lpszMenuName = NULL;
 	wc.lpszClassName = ClassName;
 	wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
 	RegisterClassEx(&wc);
 
-	HWND hWnd = CreateWindowW(ClassName, Title, WS_CLIPCHILDREN | WS_BORDER | WS_MINIMIZEBOX | CS_DBLCLKS, 0, 0, 1920, 1080, NULL, NULL, hInstance, NULL);
+	HWND hWnd = CreateWindowW(ClassName, Title, WS_SIZEBOX | WS_CLIPCHILDREN | WS_BORDER | WS_MINIMIZEBOX, 0, 0, 1000, 950, NULL, NULL, hInstance, NULL);
 	if (!hWnd) return FALSE;
 
 	ShowWindow(hWnd, nCmdShow);
@@ -28,6 +28,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine
 
 	LOG_setting(hWnd, hInstance);
 	FOV_setting(hWnd, hInstance);
+	LINE_setting(hWnd, hInstance);
 
 	MSG msg = { 0 };
 	while (GetMessage(&msg, hWnd, 0, 0) != 0)
@@ -57,11 +58,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_RBUTTONUP:
 		handling_WM_RBUTTONUP(hWnd, uMsg, wParam, lParam);
 		break;
+	case WM_SIZE:
+		handling_WM_SIZE(hWnd, uMsg, wParam, lParam);
+		break;
 	case WM_DESTROY:
 		handling_WM_DESTROY(hWnd, uMsg, wParam, lParam);
 		break;
 	case WM_HSCROLL:
-		FOV_handling(wParam, lParam);
+		handling_WM_HSCROLL(hWnd, uMsg, wParam, lParam);
 		break;
 	default:
 		return DefWindowProc(hWnd, uMsg, wParam, lParam);

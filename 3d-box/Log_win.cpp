@@ -5,7 +5,7 @@ static HWND LOG_hWnd;
 void LOG_setting(HWND hWnd, HINSTANCE g_inst)
 {
 	LOG_hWnd = CreateWindow(TEXT("edit"), TEXT("Log"), WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY,
-		10, 900, 200, 130, hWnd, (HMENU)100, g_inst, NULL);
+		10, 70, 200, 130, hWnd, (HMENU)LOG_id, g_inst, NULL);
 	return;
 }
 

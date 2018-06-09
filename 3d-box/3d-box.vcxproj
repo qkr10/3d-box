@@ -117,6 +117,7 @@
   <ItemGroup>
     <ClCompile Include="calc.cpp" />
     <ClCompile Include="Fov_win.cpp" />
+    <ClCompile Include="Line.cpp" />
     <ClCompile Include="Log_win.cpp" />
     <ClCompile Include="Main_win.cpp" />
     <ClCompile Include="Handling.cpp" />

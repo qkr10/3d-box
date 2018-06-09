@@ -7,6 +7,9 @@ static XMVECTOR Camera_LookAt = XMVectorSet(0, 0, 1, 0);
 static XMMATRIX Camera_M;
 /* 카메라관련 변수 */
 
+static POINT display = { 1980, 1080 };
+/* 화면크기 저장용 */
+
 static original_CUBE_struct original_CUBE;
 static CUBE_struct CUBE;
 /* 물체의 정점들 */
@@ -104,19 +107,43 @@ void update_matrix()
 	return;
 }
 
-void get_point(int i, int j, POINT &P1, POINT &P2)
+XMVECTOR get_point(int i, int j)
 {
-	XMVECTOR v1 = get_transformed(i, j), v2 = get_transformed(i, (j + 1) == 4 ? 0 : j + 1);
+	XMVECTOR v = get_transformed(i, j), P;
 
 	//2차원으로 점을 옮김
-	P1.x = (LONG)(XMVectorGetX(v1) / XMVectorGetZ(v1) / tanf(FOV_get() / 2) * 1000 + 960);
-	P1.y = (LONG)(XMVectorGetY(v1) / XMVectorGetZ(v1) / tanf(FOV_get() / 2) * 1000 + 540);
-	P2.x = (LONG)(XMVectorGetX(v2) / XMVectorGetZ(v2) / tanf(FOV_get() / 2) * 1000 + 960);
-	P2.y = (LONG)(XMVectorGetY(v2) / XMVectorGetZ(v2) / tanf(FOV_get() / 2) * 1000 + 540);
-	return;
+	FLOAT X, Y;
+	X = (XMVectorGetX(v) / XMVectorGetZ(v) / tanf(FOV_get() / 2) * 1000 + display.x / 2);
+	Y = (XMVectorGetY(v) / XMVectorGetZ(v) / tanf(FOV_get() / 2) * 1000 + display.y / 2);
+	P = XMVectorSet(X, Y, 0, 0);
+	return P;
 }
 
 XMVECTOR get_transformed(int i, int j)
 {
 	return XMVector3TransformCoord(CUBE.V[index[i][j]], Camera_M);
+}
+
+void get_line(VV& dots, VV& lines)
+{
+	//내분점이용!
+	int i = 1, LINE_NUM = LINE_NUM_get();
+	while (i < LINE_NUM + 1)
+	{
+		lines.push_back(dots[1] * (FLOAT)i / LINE_NUM + dots[0] * (FLOAT)(LINE_NUM - i) / LINE_NUM);
+		lines.push_back(dots[3] * (FLOAT)i / LINE_NUM + dots[0] * (FLOAT)(LINE_NUM - i) / LINE_NUM); i++;
+	}
+	i = 1;
+	while (i < LINE_NUM)
+	{
+		lines.push_back(dots[2] * (FLOAT)i / LINE_NUM + dots[1] * (FLOAT)(LINE_NUM - i) / LINE_NUM);
+		lines.push_back(dots[2] * (FLOAT)i / LINE_NUM + dots[3] * (FLOAT)(LINE_NUM - i) / LINE_NUM); i++;
+	}
+}
+
+void set_display(RECT& rect)
+{
+	display.x = rect.right;
+	display.y = rect.bottom;
+	return;
 }
