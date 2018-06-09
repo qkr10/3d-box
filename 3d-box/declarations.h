@@ -81,7 +81,6 @@
 =                                                         %                               ::::::::
 =                                                         %                                       ::::::::
 =                                                         %                                               :
-16/9 ~ -16/9
 */
 
 #include <Windows.h>
@@ -119,10 +118,11 @@ struct CUBE_struct {
 	XMVECTOR V[8] = { NULL, }; //물체내부를 원점으로 잡은상태
 	XMVECTOR Accel = XMVectorZero();
 	XMVECTOR Veloc = XMVectorZero();
-	XMMATRIX Torque = XMMatrixIdentity();
 };
 typedef vector<XMVECTOR> VV;
+typedef vector<CUBE_struct> VC;
 typedef vector<POINT> VP;
+typedef vector<VP> VVP;
 /* 타입 정의 */
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -156,20 +156,24 @@ int LINE_NUM_get();
 bool LINE_paint();
 /* 빗금개수 관련 */
 
-bool is_bumped(XMVECTOR);
-bool is_bumped(XMMATRIX);
 void camera_rotating(FLOAT, FLOAT);
 void setting();
+void create_new();
+int cubes_num(); void set_paint_n(int);
+void set_num(int); int get_num();
 bool is_hidden(int);
-void physic_calc(bool);
-void physic_reset();
-void front(); void rear(); void left(); void right();
 void update_matrix();
 XMVECTOR get_point(int, int);
 XMVECTOR get_transformed(int, int);
 void get_line(VV&, VV&);
 void set_display(RECT&);
-/* 물체 계산 관련 */
+/* 화면 계산 관련 */
+
+void physic_reset();
+void physic_calc(bool);
+bool is_bumped(XMVECTOR); bool is_bumped(int, XMVECTOR); bool is_bumped(XMMATRIX);
+void front(); void rear(); void left(); void right();
+/* 물리 계산 관련 */
 
 void handling_WM_CREATE(HWND, UINT, WPARAM, LPARAM);
 void handling_WM_PAINT(HWND, UINT, WPARAM, LPARAM);

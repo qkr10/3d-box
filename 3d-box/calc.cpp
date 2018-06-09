@@ -12,7 +12,9 @@ static POINT display = { 1980, 1080 };
 
 static original_CUBE_struct original_CUBE;
 static CUBE_struct CUBE;
-/* ¹°Ã¼ÀÇ Á¤Á¡µé */
+static VC cubes;
+static int num, paint_n;
+/* ¹°Ã¼ */
 
 static int index[6][4] = { { 0,1,2,3 },{ 5,4,7,6 },{ 3,7,4,0 },{ 1,5,6,2 },{ 4,5,1,0 },{ 7,3,2,6 } };
 /* ½Ã°è¹æÇâ Ã·ÀÚ */
@@ -21,28 +23,42 @@ bool is_bumped(XMVECTOR V)
 {
 	XMVECTOR T[8];
 	for (int i = 0; i < 8; i++) {
-		T[i] = CUBE.V[i] + V;
+		T[i] = cubes[num].V[i] + V;
 		if (XMVectorGetY(T[i]) < 0) {
 			LOG_print(TEXT("\r\n¶¥¿¡ ºÎµúÈû!"));
 			return false;
 		}
 	}
-	for (int i = 0; i < 8; i++) CUBE.V[i] = T[i];
+	for (int i = 0; i < 8; i++) cubes[num].V[i] = T[i];
+	return true;
+}
+
+bool is_bumped(int num, XMVECTOR V)
+{
+	XMVECTOR T[8];
+	for (int i = 0; i < 8; i++) {
+		T[i] = cubes[num].V[i] + V;
+		if (XMVectorGetY(T[i]) < 0) {
+			LOG_print(TEXT("\r\n¶¥¿¡ ºÎµúÈû!"));
+			return false;
+		}
+	}
+	for (int i = 0; i < 8; i++) cubes[num].V[i] = T[i];
 	return true;
 }
 
 bool is_bumped(XMMATRIX M)
 {
 	XMVECTOR T[8];
-	XMVECTOR Center = (CUBE.V[0] + CUBE.V[6]) / 2;
+	XMVECTOR Center = (cubes[num].V[0] + cubes[num].V[6]) / 2;
 	for (int i = 0; i < 8; i++) {
-		T[i] = XMVector3TransformCoord(CUBE.V[i] - Center, M) + Center;
+		T[i] = XMVector3TransformCoord(cubes[num].V[i] - Center, M) + Center;
 		if (XMVectorGetY(T[i]) < 0) {
 			LOG_print(TEXT("\r\n¶¥¿¡ ºÎµúÈû!"));
 			return false;
 		}
 	}
-	for (int i = 0; i < 8; i++) CUBE.V[i] = T[i];
+	for (int i = 0; i < 8; i++) cubes[num].V[i] = T[i];
 	return true;
 }
 
@@ -60,11 +76,26 @@ void camera_rotating(FLOAT X, FLOAT Y)
 
 void setting()
 {
-	for (int i = 0; i < 8; i++)
-		CUBE.V[i] = XMLoadFloat3(&(original_CUBE.F[i])) + XMVectorSet(0, (float)1000.000001, 0, 0);
+	create_new();
 	Camera_M = XMMatrixLookAtLH(Camera_V, Camera_LookAt, up);
 	return;
 }
+
+void create_new()
+{
+	CUBE_struct CUBE;
+	XMVECTOR V = XMVectorSet(0, (float)1001, (float)3000 * (cubes.size() + 1), 0);
+	for (int i = 0; i < 8; i++)
+		CUBE.V[i] = XMLoadFloat3(&(original_CUBE.F[i])) + V;
+	cubes.push_back(CUBE);
+	num = (int)cubes.size() - 1;
+	return;
+}
+
+int cubes_num() { return (int)cubes.size(); }
+void set_paint_n(int n) { paint_n = n; }
+void set_num(int n) { num = n == cubes.size() ? 0 : n; }
+int get_num() { return num; }
 
 bool is_hidden(int i)
 {
@@ -81,18 +112,21 @@ bool is_hidden(int i)
 
 void physic_calc(bool is_g)
 {
-	static const XMVECTOR g = XMVectorSet(0, -9800, 0, 0);
-	FLOAT T = 1 / (float)50;
-	CUBE.Veloc += T * (is_g ? g + CUBE.Accel : CUBE.Accel);
-	XMVECTOR V = CUBE.Veloc * T;
-	if (!is_bumped(V))
-		CUBE.Veloc *= XMVectorSet(1, -1, 1, 1);
+	for (int num = 0; num < cubes.size(); num++) {
+		static const XMVECTOR g = XMVectorSet(0, -9800, 0, 0);
+		FLOAT T = 1 / (float)50;
+		cubes[num].Veloc += T * (is_g ? g + cubes[num].Accel : cubes[num].Accel);
+		XMVECTOR V = cubes[num].Veloc * T;
+		if (!is_bumped(num, V))
+			cubes[num].Veloc *= XMVectorSet(1, -1, 1, 1);
+	}
 	return;
 }
 
 void physic_reset()
 {
-	CUBE.Veloc = CUBE.Accel = XMVectorZero();
+	for (int num = 0; num < cubes.size(); num++)
+		cubes[num].Veloc = cubes[num].Accel = XMVectorZero();
 	return;
 }
 
@@ -121,7 +155,7 @@ XMVECTOR get_point(int i, int j)
 
 XMVECTOR get_transformed(int i, int j)
 {
-	return XMVector3TransformCoord(CUBE.V[index[i][j]], Camera_M);
+	return XMVector3TransformCoord(cubes[paint_n].V[index[i][j]], Camera_M);
 }
 
 void get_line(VV& dots, VV& lines)

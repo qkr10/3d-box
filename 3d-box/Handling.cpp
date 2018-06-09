@@ -28,43 +28,50 @@ void handling_WM_PAINT(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	HBITMAP mem_old = (HBITMAP)SelectObject(hdc, mem_new);
 
 	//하이얀 펜을 준비
-	HPEN NewP, OldP;
-	NewP = CreatePen(PS_SOLID, 2, RGB(255, 255, 255));
-	OldP = (HPEN)SelectObject(hdc, NewP);
-	//6개의 면을 렌더링
-	for (int i = 0; i < 6; i++) {
-		//은면제거
-		if (is_hidden(i)) continue;
+	HPEN whiteP, redP, oldP;
+	whiteP = CreatePen(PS_SOLID, 2, RGB(255, 255, 255));
+	redP = CreatePen(PS_SOLID, 2, RGB(255, 0, 0));
+	oldP = (HPEN)SelectObject(hdc, whiteP);
+	//물체를 렌더링
+	for (int n = 0; n < cubes_num(); n++) {
+		set_paint_n(n);
+		if (n == get_num()) SelectObject(hdc, redP);
+		//6개의 면을 렌더링
+		for (int i = 0; i < 6; i++) {
+			//은면제거
+			if (is_hidden(i)) continue;
 
-		VV dots;
-		for (int j = 0; j < 4; j++)
-			dots.push_back(get_point(i, j));
+			VV dots;
+			for (int j = 0; j < 4; j++)
+				dots.push_back(get_point(i, j));
 
-		VP dot;
-		vvtovp(dots, dot);
-		for (int j = 0; j < 4; j++) {
-			int jj = j + 1 == 4 ? 0 : j + 1;
-			//점을 25개씩 찍는다
-			COLORREF C = RGB(255, 255, 255);
-			for (int i = -2; i < 3; i++)
-				for (int k = -2; k < 3; k++)
-					SetPixel(hdc, (int)dot[j].x + i, (int)dot[j].y + k, C);
+			VP dot;
+			vvtovp(dots, dot);
+			for (int j = 0; j < 4; j++) {
+				int jj = j + 1 == 4 ? 0 : j + 1;
+				//점을 25개씩 찍는다
+				COLORREF C = RGB(255, 255, 255);
+				for (int i = -2; i < 3; i++)
+					for (int k = -2; k < 3; k++)
+						SetPixel(hdc, (int)dot[j].x + i, (int)dot[j].y + k, C);
 
-			MoveToEx(hdc, (int)dot[j].x, (int)dot[j].y, NULL);
-			LineTo(hdc, (int)dot[jj].x, (int)dot[jj].y);
+				MoveToEx(hdc, (int)dot[j].x, (int)dot[j].y, NULL);
+				LineTo(hdc, (int)dot[jj].x, (int)dot[jj].y);
+			}
+
+			VV lines; VP line;
+			get_line(dots, lines);
+			vvtovp(lines, line);
+			int k = 0;
+			while (k < line.size())
+			{
+				MoveToEx(hdc, (int)line[k].x, (int)line[k].y, NULL); k++;
+				LineTo(hdc, (int)line[k].x, (int)line[k].y); k++;
+			}
 		}
-
-		VV lines; VP line;
-		get_line(dots, lines);
-		vvtovp(lines, line);
-		int k = 0;
-		while (k < line.size())
-		{
-			MoveToEx(hdc, (int)line[k].x, (int)line[k].y, NULL); k++;
-			LineTo(hdc, (int)line[k].x, (int)line[k].y); k++;
-		}
+		if (n == get_num()) SelectObject(hdc, whiteP);
 	}
-	SelectObject(hdc, OldP);
+	SelectObject(hdc, oldP);
 
 	BitBlt(h_dc, 0, 0, client_size.right, client_size.bottom, hdc, 0, 0, SRCCOPY);
 	mem_new = (HBITMAP)SelectObject(hdc, mem_old);
@@ -165,65 +172,68 @@ void Box_Translation(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 {
 	static const XMVECTOR Up = XMVectorSet(0, 100, 0, 0);
 
-	if (_key('U') || _key('J')) {
-		XMVECTOR V = XMVectorZero();
-		static bool T[2] = { false, false };
-		if (_key('U')) {
-			V = Up;
-			if (!T[0])
-				LOG_print(TEXT("\r\n상승(U)"));
-			T[0] = true;
-		}
-		else T[0] = false;
-		if (_key('J')) {
-			V = -1 * Up;
-			if (!T[1])
-				LOG_print(TEXT("\r\n하강(J)"));
-			T[1] = true;
-		}
-		else T[1] = false;
-
-		if (!is_bumped(V))
-			goto EXCEPTION;
-		paint_trigger = true;
+	static bool TT[2] = { false, false };
+	if (!(_key('U') || _key('J'))) {
+		TT[0] = TT[1] = false;
+		goto EXCEPTION;
 	}
+	XMVECTOR V = XMVectorZero();
+	if (_key('U')) {
+		V = Up;
+		if (!TT[0])
+			LOG_print(TEXT("\r\n상승(U)"));
+		TT[0] = true;
+	}
+	else TT[0] = false;
+	if (_key('J')) {
+		V = -1 * Up;
+		if (!TT[1])
+			LOG_print(TEXT("\r\n하강(J)"));
+		TT[1] = true;
+	}
+	else TT[1] = false;
+
+	if (!is_bumped(V))
+		goto EXCEPTION;
+	paint_trigger = true;
 EXCEPTION:
 
-	if (_key(VK_UP) || _key(VK_DOWN) || _key(VK_LEFT) || _key(VK_RIGHT)) {
-		XMVECTOR Axis = XMVectorSet(1, 0, 0, 0);
-		static bool T[4] = { false, false, false, false };
-		if (_key(VK_UP)) {
-			if (!T[0])
-				LOG_print(TEXT("\r\n회전(↑)"));
-			T[0] = true;
-		}
-		else T[0] = false;
-		if (_key(VK_DOWN)) {
-			Axis = XMVectorSet(-1, 0, 0, 0);
-			if (!T[1])
-				LOG_print(TEXT("\r\n회전(↓)"));
-			T[1] = true;
-		}
-		else T[1] = false;
-		if (_key(VK_LEFT)) {
-			Axis = XMVectorSet(0, -1, 0, 0);
-			if (!T[2])
-				LOG_print(TEXT("\r\n회전(←)"));
-			T[2] = true;
-		}
-		else T[2] = false;
-		if (_key(VK_RIGHT)) {
-			Axis = XMVectorSet(0, 1, 0, 0);
-			if (!T[3])
-				LOG_print(TEXT("\r\n회전(→)"));
-			T[3] = true;
-		}
-		else T[3] = false;
-
-		if (!is_bumped(XMMatrixRotationAxis(Axis, XMConvertToRadians(1))))
-			goto EXCEPTION1;
-		paint_trigger = true;
+	static bool T[4] = { false, false, false, false };
+	if (!(_key(VK_UP) || _key(VK_DOWN) || _key(VK_LEFT) || _key(VK_RIGHT))) {
+		T[0] = T[1] = T[2] = T[3] = false;
+		goto EXCEPTION1;
 	}
+	XMVECTOR Axis = XMVectorSet(1, 0, 0, 0);
+	if (_key(VK_UP)) {
+		if (!T[0])
+			LOG_print(TEXT("\r\n회전(↑)"));
+		T[0] = true;
+	}
+	else T[0] = false;
+	if (_key(VK_DOWN)) {
+		Axis = XMVectorSet(-1, 0, 0, 0);
+		if (!T[1])
+			LOG_print(TEXT("\r\n회전(↓)"));
+		T[1] = true;
+	}
+	else T[1] = false;
+	if (_key(VK_LEFT)) {
+		Axis = XMVectorSet(0, -1, 0, 0);
+		if (!T[2])
+			LOG_print(TEXT("\r\n회전(←)"));
+		T[2] = true;
+	}
+	else T[2] = false;
+	if (_key(VK_RIGHT)) {
+		Axis = XMVectorSet(0, 1, 0, 0);
+		if (!T[3])
+			LOG_print(TEXT("\r\n회전(→)"));
+		T[3] = true;
+	}
+	else T[3] = false;
+	if (!is_bumped(XMMatrixRotationAxis(Axis, XMConvertToRadians(1))))
+		goto EXCEPTION1;
+	paint_trigger = true;
 EXCEPTION1:
 
 	return;
@@ -247,8 +257,11 @@ void Physic_Effects(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 
 void Camera_Movement(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 {
-	if (!(_key('W') || _key('A') || _key('D') || _key('S'))) return;
 	static bool T[4] = { false, false, false, false };
+	if (!(_key('W') || _key('A') || _key('D') || _key('S'))) {
+		T[0] = T[1] = T[2] = T[3] = false;
+		return;
+	}
 	if (_key('W')) {
 		if (!T[0])
 			LOG_print(TEXT("\r\n전진(W)"));
@@ -304,6 +317,16 @@ void Key_Check(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 	if (_key1('G')) {
 		is_gravity = !is_gravity;
 		LOG_print(is_gravity ? TEXT("\r\n중력 켜짐(g)") : TEXT("\r\n중력 꺼짐(g)"));
+	}
+	if (_key1('N')) {
+		create_new();
+		paint_trigger = true;
+		LOG_print(TEXT("\r\n새 물체 생성(n)"));
+	}
+	if (_key1(VK_TAB)) {
+		set_num(get_num() + 1);
+		paint_trigger = true;
+		LOG_print(TEXT("\r\n다른 물체 선택(tab)"));
 	}
 	return;
 }
