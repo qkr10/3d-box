@@ -28,18 +28,23 @@ void handling_WM_PAINT(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	HBITMAP mem_old = (HBITMAP)SelectObject(hdc, mem_new);
 
 	//하이얀 펜을 준비
-	HPEN whiteP, redP, oldP;
+	HPEN whiteP, redP, grayP, oldP;
 	whiteP = CreatePen(PS_SOLID, 2, RGB(255, 255, 255));
 	redP = CreatePen(PS_SOLID, 2, RGB(255, 0, 0));
+	grayP = CreatePen(PS_SOLID, 2, RGB(127, 127, 127));
 	oldP = (HPEN)SelectObject(hdc, whiteP);
 	//물체를 렌더링
+	rendering();
 	for (int n = 0; n < cubes_num(); n++) {
 		set_paint_n(n);
+		int hidden = 0;
 		if (n == get_num()) SelectObject(hdc, redP);
+		else SelectObject(hdc, whiteP);
 		//6개의 면을 렌더링
 		for (int i = 0; i < 6; i++) {
 			//은면제거
 			if (is_hidden(i)) continue;
+			hidden = 1;
 
 			VV dots;
 			for (int j = 0; j < 4; j++)
@@ -55,8 +60,13 @@ void handling_WM_PAINT(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					for (int k = -2; k < 3; k++)
 						SetPixel(hdc, (int)dot[j].x + i, (int)dot[j].y + k, C);
 
-				MoveToEx(hdc, (int)dot[j].x, (int)dot[j].y, NULL);
-				LineTo(hdc, (int)dot[jj].x, (int)dot[jj].y);
+				//MoveToEx(hdc, (int)dot[j].x, (int)dot[j].y, NULL);
+				//LineTo(hdc, (int)dot[jj].x, (int)dot[jj].y);
+			}
+
+			VPP edges = get_plane(n, i);
+			for each (PP var in edges) {
+				MoveToEx(hdc, var.first.x, var.first.y, NULL);
 			}
 
 			VV lines; VP line;
@@ -69,7 +79,13 @@ void handling_WM_PAINT(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				LineTo(hdc, (int)line[k].x, (int)line[k].y); k++;
 			}
 		}
-		if (n == get_num()) SelectObject(hdc, whiteP);
+		if (hidden == 0) continue;
+		VP A = get_ch(n);
+		SelectObject(hdc, grayP);
+		for (int i = 0; i < A.size() - 1; i++) {
+			MoveToEx(hdc, A[i].x, A[i].y, NULL);
+			LineTo(hdc, A[i + 1].x, A[i + 1].y);
+		}
 	}
 	SelectObject(hdc, oldP);
 

@@ -12,24 +12,230 @@ static POINT display = { 1980, 1080 };
 
 static original_CUBE_struct original_CUBE;
 static CUBE_struct CUBE;
-static VC cubes;
+static VC cu;
 static int num, paint_n;
 /* ¹°Ã¼ */
 
-static int index[6][4] = { { 0,1,2,3 },{ 5,4,7,6 },{ 3,7,4,0 },{ 1,5,6,2 },{ 4,5,1,0 },{ 7,3,2,6 } };
+static int index[6][5] = { { 0,1,2,3,0 },{ 5,4,7,6,5 },{ 3,7,4,0,3 },{ 1,5,6,2,1 },{ 4,5,1,0,4 },{ 7,3,2,6,7 } };
 /* ½Ã°è¹æÇâ Ã·ÀÚ */
+
+bool judge(POINT& A, POINT& B)
+{
+	return A.x < B.x;
+}
+
+int cross(POINT& O, POINT& A, POINT& B)
+{
+	return (A.x - O.x) * (B.y - O.y) - (A.y - O.y) * (B.x - O.x);
+}
+
+VP convex_hull(VP& P)
+{
+	int k = 0;
+	VP H(16);
+	sort(P.begin(), P.end(), judge);
+
+	for (int i = 0; i < 8; ++i) {
+		while (k >= 2 && cross(H[k - 2], H[k - 1], P[i]) <= 0) k--;
+		H[k++] = P[i];
+	}
+	for (int i = 7, t = k + 1; i > 0; --i) {
+		while (k >= t && cross(H[k - 2], H[k - 1], P[i - 1]) < 0) k--;
+		H[k++] = P[i - 1];
+	}
+
+	H.resize(k - 1);
+	return H;
+}
+
+F pptol(POINT& A, POINT& B)
+{
+	FLOAT a, b;
+	a = (A.y - B.y) / (A.x - B.x + 0.000001);
+	b = -1 * A.x * a + A.y;
+	return make_pair(a, b);
+}
+
+float scale(POINT A)
+{
+	return sqrtf(A.x * A.x + A.y * A.y);
+}
+
+float angle(POINT A, POINT O, POINT B)
+{
+	A.x -= O.x;
+	A.y -= O.y;
+	B.x -= O.x;
+	B.y -= O.y;
+	float dot = A.x * B.x + A.y * B.y;
+	return acosf(dot / scale(A) / scale(B));
+}
+
+bool winding_num(VP& P, POINT O)
+{
+	float sum = 0;
+	for (int i = 0; i < P.size() - 1; i++) {
+		if (cross(O, P[i], P[i + 1]) > 0)
+			sum += angle(P[i], O, P[i + 1]);
+		else sum -= angle(P[i], O, P[i + 1]);
+	}
+	return fabsf(sum - 2 * (float)3.141592) < 0.001;
+}
+
+POINT point(F A, F B)
+{
+	int x = (B.second - A.second) / (A.first - B.first);
+	int y = x * A.first + A.second;
+	return{ x, y };
+}
+
+bool point_check(POINT O, POINT A, POINT B)
+{
+	if (A.x < B.x) {
+		if (A.x < O.x && O.x < B.x)
+			return true;
+	}
+	else if (B.x < O.x && O.x < A.x)
+		return true;
+	return false;
+}
+
+float length(POINT A, POINT B) {
+	POINT P = { A.x - B.x, A.y - B.y };
+	return scale(P);
+}
+
+bool judge1(PP A, PP B)
+{
+	return length(A.second, A.first) < length(B.second, B.first);
+}
+
+POINT middle(POINT A, POINT B)
+{
+	return{ (A.x + B.x) / 2, (A.y + B.y) / 2 };
+}
+
+void rendering()
+{
+	for (int n = 0; n < cu.size(); n++) {
+		cu[n].P.clear(); cu[n].Pl.clear();
+		cu[n].ch.clear(); cu[n].chl.clear();
+		cu[n].F.clear(); cu[n].pll.clear();
+		cu[n].plane.clear();
+	}
+
+	for (int n = 0; n < cu.size(); n++) {
+		for (int i = 0; i < 8; i++)
+			cu[n].VV[i] = XMVector3TransformCoord(cu[n].V[i], Camera_M);
+		for (int i = 0; i < 8; i++) {
+			XMVECTOR v = cu[n].VV[i];
+			FLOAT X, Y;
+			X = (XMVectorGetX(v) / XMVectorGetZ(v) / tanf(FOV_get() / 2) * 1000 + display.x / 2);
+			Y = (XMVectorGetY(v) / XMVectorGetZ(v) / tanf(FOV_get() / 2) * 1000 + display.y / 2);
+			POINT P = { X,Y };
+			cu[n].P.push_back(P);
+		}
+		cu[n].ch = convex_hull(cu[n].P);
+
+		cu[n].P.push_back(cu[n].P[0]);
+		cu[n].ch.push_back(cu[n].ch[0]);
+		
+		for (int i = 0; i < cu[n].P.size() - 1; i++)
+			cu[n].Pl.push_back(pptol(cu[n].P[i], cu[n].P[i+1]));
+		cu[n].Pl.push_back(cu[n].Pl[0]);
+		
+		for (int i = 0; i < cu[n].ch.size() - 1; i++)
+			cu[n].chl.push_back(pptol(cu[n].ch[i], cu[n].ch[i+1]));
+		cu[n].chl.push_back(cu[n].chl[0]);
+
+		VF temp;
+		for (int i = 0; i < 6; i++) {
+			for (int j = 0; j < 4; j++)
+				temp.push_back(pptol(cu[n].P[index[i][j]], cu[n].P[index[i][j + 1]]));
+			temp.push_back(temp[0]);
+			cu[n].pll.push_back(temp);
+			temp.clear();
+		}
+	}
+
+	int s = cu.size(), val = 0;
+	vector<int> t(s, val);
+	vector<vector<int>> dp(s, t);
+	//µ¿Àû °èÈ¹¹ýÀÌ¿ë
+	//¾î¶²¹°Ã¼°¡ ¾î¶²¹°Ã¼¸¦ °¡¸®´ÂÁö ÆÇ´Ü
+	for (int n = 0; n < s; n++)
+		for (int m = 0; m < s; m++) {
+			if (n == m || dp[n][m] == 1) continue;
+			for (int i = 0; i < cu[n].P.size(); i++)
+				if (winding_num(cu[n].ch, cu[m].P[i])) {
+					dp[n][m] = 1;
+					dp[m][n] = 1;
+					//LOG_print(L"\r\n¹°Ã¼³¢¸® °¡·ÁÁü!");
+					XMVECTOR center
+						= (cu[n].V[index[0][0]]
+							+ cu[n].V[index[0][2]]
+							+ cu[n].V[index[2][0]]
+							+ cu[n].V[index[2][2]]) / 4;
+					FLOAT L = XMVectorGetX(XMVector3Length(cu[m].V[i]));
+					FLOAT D = XMVectorGetX(XMVector3Dot(center, cu[m].V[i]));
+					if (D < L * L)
+						cu[m].F.push_back(n);
+					else
+						cu[n].F.push_back(m);
+				}
+		}
+
+	for (int m = 0; m < cu.size(); m++) {
+		for (int i = 0; i < 6; i++) {
+			for (int j = 0; j < 4; j++) {
+				cu[m].plane[i].push_back(cu[m].P[index[i][j]]);
+				VPP temp;
+				for (int k = 0; k < cu[m].F.size(); k++)
+					for (int l = 0; l < cu[cu[m].F[k]].chl.size(); i++) {
+						POINT P = point(cu[m].pll[i][j], cu[cu[m].F[k]].chl[l]);
+						if (point_check(P, cu[m].P[index[i][j]], cu[m].P[index[i][j + 1]]))
+							temp.push_back(make_pair(P, cu[m].P[index[i][j]]));
+					}
+				sort(temp.begin, temp.end, judge1);
+				for (int k = 0; k < temp.size(); k++)
+					cu[m].plane[i].push_back(temp[k].second);
+			}
+			cu[m].plane[i].push_back(cu[m].plane[i][0]);
+		}
+	}
+	return;
+}
+
+VP get_ch(int n)
+{
+	return cu[n].ch;
+}
+
+VPP get_plane(int m, int i)
+{
+	VPP Return;
+	for (int k = 0; k < cu[m].plane[i].size(); k++) {
+		int R = 0;
+		for (int l = 0; l < cu[m].F.size(); l++)
+			if (winding_num(cu[cu[m].F[l]].ch, middle(cu[m].plane[i][k], cu[m].plane[i][k + 1])))
+				R++;
+		if (R == 0)
+			Return.push_back(make_pair(cu[m].plane[i][k], cu[m].plane[i][k + 1]));
+	}
+	return Return;
+}
 
 bool is_bumped(XMVECTOR V)
 {
 	XMVECTOR T[8];
 	for (int i = 0; i < 8; i++) {
-		T[i] = cubes[num].V[i] + V;
+		T[i] = cu[num].V[i] + V;
 		if (XMVectorGetY(T[i]) < 0) {
 			LOG_print(TEXT("\r\n¶¥¿¡ ºÎµúÈû!"));
 			return false;
 		}
 	}
-	for (int i = 0; i < 8; i++) cubes[num].V[i] = T[i];
+	for (int i = 0; i < 8; i++) cu[num].V[i] = T[i];
 	return true;
 }
 
@@ -37,28 +243,28 @@ bool is_bumped(int num, XMVECTOR V)
 {
 	XMVECTOR T[8];
 	for (int i = 0; i < 8; i++) {
-		T[i] = cubes[num].V[i] + V;
+		T[i] = cu[num].V[i] + V;
 		if (XMVectorGetY(T[i]) < 0) {
 			LOG_print(TEXT("\r\n¶¥¿¡ ºÎµúÈû!"));
 			return false;
 		}
 	}
-	for (int i = 0; i < 8; i++) cubes[num].V[i] = T[i];
+	for (int i = 0; i < 8; i++) cu[num].V[i] = T[i];
 	return true;
 }
 
 bool is_bumped(XMMATRIX M)
 {
 	XMVECTOR T[8];
-	XMVECTOR Center = (cubes[num].V[0] + cubes[num].V[6]) / 2;
+	XMVECTOR Center = (cu[num].V[0] + cu[num].V[6]) / 2;
 	for (int i = 0; i < 8; i++) {
-		T[i] = XMVector3TransformCoord(cubes[num].V[i] - Center, M) + Center;
+		T[i] = XMVector3TransformCoord(cu[num].V[i] - Center, M) + Center;
 		if (XMVectorGetY(T[i]) < 0) {
 			LOG_print(TEXT("\r\n¶¥¿¡ ºÎµúÈû!"));
 			return false;
 		}
 	}
-	for (int i = 0; i < 8; i++) cubes[num].V[i] = T[i];
+	for (int i = 0; i < 8; i++) cu[num].V[i] = T[i];
 	return true;
 }
 
@@ -84,17 +290,17 @@ void setting()
 void create_new()
 {
 	CUBE_struct CUBE;
-	XMVECTOR V = XMVectorSet(0, (float)1001, (float)3000 * (cubes.size() + 1), 0);
+	XMVECTOR V = XMVectorSet(0, (float)1001, (float)3000 * (cu.size() + 1), 0);
 	for (int i = 0; i < 8; i++)
 		CUBE.V[i] = XMLoadFloat3(&(original_CUBE.F[i])) + V;
-	cubes.push_back(CUBE);
-	num = (int)cubes.size() - 1;
+	cu.push_back(CUBE);
+	num = (int)cu.size() - 1;
 	return;
 }
 
-int cubes_num() { return (int)cubes.size(); }
+int cubes_num() { return (int)cu.size(); }
 void set_paint_n(int n) { paint_n = n; }
-void set_num(int n) { num = n == cubes.size() ? 0 : n; }
+void set_num(int n) { num = n == cu.size() ? 0 : n; }
 int get_num() { return num; }
 
 bool is_hidden(int i)
@@ -112,21 +318,21 @@ bool is_hidden(int i)
 
 void physic_calc(bool is_g)
 {
-	for (int num = 0; num < cubes.size(); num++) {
+	for (int num = 0; num < cu.size(); num++) {
 		static const XMVECTOR g = XMVectorSet(0, -9800, 0, 0);
 		FLOAT T = 1 / (float)50;
-		cubes[num].Veloc += T * (is_g ? g + cubes[num].Accel : cubes[num].Accel);
-		XMVECTOR V = cubes[num].Veloc * T;
+		cu[num].Veloc += T * (is_g ? g + cu[num].Accel : cu[num].Accel);
+		XMVECTOR V = cu[num].Veloc * T;
 		if (!is_bumped(num, V))
-			cubes[num].Veloc *= XMVectorSet(1, -1, 1, 1);
+			cu[num].Veloc *= XMVectorSet(1, -1, 1, 1);
 	}
 	return;
 }
 
 void physic_reset()
 {
-	for (int num = 0; num < cubes.size(); num++)
-		cubes[num].Veloc = cubes[num].Accel = XMVectorZero();
+	for (int num = 0; num < cu.size(); num++)
+		cu[num].Veloc = cu[num].Accel = XMVectorZero();
 	return;
 }
 
@@ -155,7 +361,7 @@ XMVECTOR get_point(int i, int j)
 
 XMVECTOR get_transformed(int i, int j)
 {
-	return XMVector3TransformCoord(cubes[paint_n].V[index[i][j]], Camera_M);
+	return XMVector3TransformCoord(cu[paint_n].V[index[i][j]], Camera_M);
 }
 
 void get_line(VV& dots, VV& lines)

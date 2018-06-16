@@ -91,6 +91,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <vector>
+#include <algorithm>
 
 using namespace DirectX;
 using namespace DirectX::PackedVector;
@@ -102,6 +103,14 @@ using namespace std;
 //오른편 시계방향	:1562
 //윗면 시계방향		:4510
 //아랫면 시계방향	:7326
+typedef vector<XMVECTOR> VV;
+typedef vector<POINT> VP;
+typedef pair<POINT, POINT> PP;
+typedef vector<PP> VPP;
+typedef pair<float, float> F;
+typedef vector<F> VF;
+typedef vector<VF> VVF;
+typedef vector<int> VI;
 struct original_CUBE_struct {
 	XMFLOAT3 F[8] = {
 		{ (FLOAT)-1000, (FLOAT)1000, (FLOAT)-1000 },
@@ -116,13 +125,15 @@ struct original_CUBE_struct {
 };
 struct CUBE_struct {
 	XMVECTOR V[8] = { NULL, }; //물체내부를 원점으로 잡은상태
+	XMVECTOR VV[8] = { NULL, };
+	VP P, ch, plane[8];
+	VF Pl, chl;
+	VI F;
+	VVF pll;
 	XMVECTOR Accel = XMVectorZero();
 	XMVECTOR Veloc = XMVectorZero();
 };
-typedef vector<XMVECTOR> VV;
 typedef vector<CUBE_struct> VC;
-typedef vector<POINT> VP;
-typedef vector<VP> VVP;
 /* 타입 정의 */
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -156,6 +167,9 @@ int LINE_NUM_get();
 bool LINE_paint();
 /* 빗금개수 관련 */
 
+void rendering();
+VP get_ch(int);
+VPP get_plane(int, int);
 void camera_rotating(FLOAT, FLOAT);
 void setting();
 void create_new();
