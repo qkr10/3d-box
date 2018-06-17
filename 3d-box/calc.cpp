@@ -121,7 +121,8 @@ void rendering()
 		cu[n].P.clear(); cu[n].Pl.clear();
 		cu[n].ch.clear(); cu[n].chl.clear();
 		cu[n].F.clear(); cu[n].pll.clear();
-		cu[n].plane.clear();
+		for (int i = 0; i < 6; i++)
+			cu[n].plane[i].clear();
 	}
 
 	for (int n = 0; n < cu.size(); n++) {
@@ -196,7 +197,8 @@ void rendering()
 						if (point_check(P, cu[m].P[index[i][j]], cu[m].P[index[i][j + 1]]))
 							temp.push_back(make_pair(P, cu[m].P[index[i][j]]));
 					}
-				sort(temp.begin, temp.end, judge1);
+				if (temp.size() > 1)
+					sort(&temp[0], &temp[temp.size() - 1], judge1);
 				for (int k = 0; k < temp.size(); k++)
 					cu[m].plane[i].push_back(temp[k].second);
 			}
@@ -214,7 +216,7 @@ VP get_ch(int n)
 VPP get_plane(int m, int i)
 {
 	VPP Return;
-	for (int k = 0; k < cu[m].plane[i].size(); k++) {
+	for (int k = 0; k < cu[m].plane[i].size() - 1; k++) {
 		int R = 0;
 		for (int l = 0; l < cu[m].F.size(); l++)
 			if (winding_num(cu[cu[m].F[l]].ch, middle(cu[m].plane[i][k], cu[m].plane[i][k + 1])))

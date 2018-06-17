@@ -126,7 +126,7 @@ struct original_CUBE_struct {
 struct CUBE_struct {
 	XMVECTOR V[8] = { NULL, }; //물체내부를 원점으로 잡은상태
 	XMVECTOR VV[8] = { NULL, };
-	VP P, ch, plane[8];
+	VP P, ch, plane[6];
 	VF Pl, chl;
 	VI F;
 	VVF pll;

@@ -38,8 +38,6 @@ void handling_WM_PAINT(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	for (int n = 0; n < cubes_num(); n++) {
 		set_paint_n(n);
 		int hidden = 0;
-		if (n == get_num()) SelectObject(hdc, redP);
-		else SelectObject(hdc, whiteP);
 		//6개의 면을 렌더링
 		for (int i = 0; i < 6; i++) {
 			//은면제거
@@ -52,6 +50,7 @@ void handling_WM_PAINT(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			VP dot;
 			vvtovp(dots, dot);
+			SelectObject(hdc, whiteP);
 			for (int j = 0; j < 4; j++) {
 				int jj = j + 1 == 4 ? 0 : j + 1;
 				//점을 25개씩 찍는다
@@ -67,8 +66,10 @@ void handling_WM_PAINT(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			VPP edges = get_plane(n, i);
 			for each (PP var in edges) {
 				MoveToEx(hdc, var.first.x, var.first.y, NULL);
+				LineTo(hdc, var.second.x, var.second.y);
 			}
 
+			if (n == get_num()) SelectObject(hdc, redP);
 			VV lines; VP line;
 			get_line(dots, lines);
 			vvtovp(lines, line);
@@ -79,13 +80,13 @@ void handling_WM_PAINT(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				LineTo(hdc, (int)line[k].x, (int)line[k].y); k++;
 			}
 		}
-		if (hidden == 0) continue;
+		/*if (hidden == 0) continue;
 		VP A = get_ch(n);
 		SelectObject(hdc, grayP);
 		for (int i = 0; i < A.size() - 1; i++) {
 			MoveToEx(hdc, A[i].x, A[i].y, NULL);
 			LineTo(hdc, A[i + 1].x, A[i + 1].y);
-		}
+		}*/
 	}
 	SelectObject(hdc, oldP);
 
