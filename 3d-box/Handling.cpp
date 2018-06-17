@@ -48,27 +48,6 @@ void handling_WM_PAINT(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			for (int j = 0; j < 4; j++)
 				dots.push_back(get_point(i, j));
 
-			VP dot;
-			vvtovp(dots, dot);
-			SelectObject(hdc, whiteP);
-			for (int j = 0; j < 4; j++) {
-				int jj = j + 1 == 4 ? 0 : j + 1;
-				//점을 25개씩 찍는다
-				COLORREF C = RGB(255, 255, 255);
-				for (int i = -2; i < 3; i++)
-					for (int k = -2; k < 3; k++)
-						SetPixel(hdc, (int)dot[j].x + i, (int)dot[j].y + k, C);
-
-				//MoveToEx(hdc, (int)dot[j].x, (int)dot[j].y, NULL);
-				//LineTo(hdc, (int)dot[jj].x, (int)dot[jj].y);
-			}
-
-			VPP edges = get_plane(n, i);
-			for each (PP var in edges) {
-				MoveToEx(hdc, var.first.x, var.first.y, NULL);
-				LineTo(hdc, var.second.x, var.second.y);
-			}
-
 			if (n == get_num()) SelectObject(hdc, redP);
 			VV lines; VP line;
 			get_line(dots, lines);
@@ -79,6 +58,27 @@ void handling_WM_PAINT(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				MoveToEx(hdc, (int)line[k].x, (int)line[k].y, NULL); k++;
 				LineTo(hdc, (int)line[k].x, (int)line[k].y); k++;
 			}
+			/*VP dot;
+			vvtovp(dots, dot);
+			for (int j = 0; j < 4; j++) {
+				int jj = j + 1 == 4 ? 0 : j + 1;
+				//점을 25개씩 찍는다
+				COLORREF C = RGB(255, 255, 255);
+				for (int i = -2; i < 3; i++)
+					for (int k = -2; k < 3; k++)
+						SetPixel(hdc, (int)dot[j].x + i, (int)dot[j].y + k, C);
+
+				//MoveToEx(hdc, (int)dot[j].x, (int)dot[j].y, NULL);
+				//LineTo(hdc, (int)dot[jj].x, (int)dot[jj].y);
+			}*/
+
+			SelectObject(hdc, whiteP);
+			VPP edges = get_plane(n, i);
+			for (int a = 0; a < edges.size(); a++) {
+				MoveToEx(hdc, edges[a].first.x, edges[a].first.y, NULL);
+				LineTo(hdc, edges[a].second.x, edges[a].second.y);
+			}
+
 		}
 		/*if (hidden == 0) continue;
 		VP A = get_ch(n);

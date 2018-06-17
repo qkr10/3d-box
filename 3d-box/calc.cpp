@@ -29,7 +29,7 @@ int cross(POINT& O, POINT& A, POINT& B)
 	return (A.x - O.x) * (B.y - O.y) - (A.y - O.y) * (B.x - O.x);
 }
 
-VP convex_hull(VP& P)
+VP convex_hull(VP P)
 {
 	int k = 0;
 	VP H(16);
@@ -118,7 +118,7 @@ POINT middle(POINT A, POINT B)
 void rendering()
 {
 	for (int n = 0; n < cu.size(); n++) {
-		cu[n].P.clear(); cu[n].Pl.clear();
+		cu[n].P.clear();
 		cu[n].ch.clear(); cu[n].chl.clear();
 		cu[n].F.clear(); cu[n].pll.clear();
 		for (int i = 0; i < 6; i++)
@@ -137,13 +137,7 @@ void rendering()
 			cu[n].P.push_back(P);
 		}
 		cu[n].ch = convex_hull(cu[n].P);
-
-		cu[n].P.push_back(cu[n].P[0]);
 		cu[n].ch.push_back(cu[n].ch[0]);
-		
-		for (int i = 0; i < cu[n].P.size() - 1; i++)
-			cu[n].Pl.push_back(pptol(cu[n].P[i], cu[n].P[i+1]));
-		cu[n].Pl.push_back(cu[n].Pl[0]);
 		
 		for (int i = 0; i < cu[n].ch.size() - 1; i++)
 			cu[n].chl.push_back(pptol(cu[n].ch[i], cu[n].ch[i+1]));
@@ -153,7 +147,6 @@ void rendering()
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 4; j++)
 				temp.push_back(pptol(cu[n].P[index[i][j]], cu[n].P[index[i][j + 1]]));
-			temp.push_back(temp[0]);
 			cu[n].pll.push_back(temp);
 			temp.clear();
 		}
@@ -192,7 +185,7 @@ void rendering()
 				cu[m].plane[i].push_back(cu[m].P[index[i][j]]);
 				VPP temp;
 				for (int k = 0; k < cu[m].F.size(); k++)
-					for (int l = 0; l < cu[cu[m].F[k]].chl.size(); i++) {
+					for (int l = 0; l < cu[cu[m].F[k]].chl.size(); l++) {
 						POINT P = point(cu[m].pll[i][j], cu[cu[m].F[k]].chl[l]);
 						if (point_check(P, cu[m].P[index[i][j]], cu[m].P[index[i][j + 1]]))
 							temp.push_back(make_pair(P, cu[m].P[index[i][j]]));
@@ -200,7 +193,7 @@ void rendering()
 				if (temp.size() > 1)
 					sort(&temp[0], &temp[temp.size() - 1], judge1);
 				for (int k = 0; k < temp.size(); k++)
-					cu[m].plane[i].push_back(temp[k].second);
+					cu[m].plane[i].push_back(temp[k].first);
 			}
 			cu[m].plane[i].push_back(cu[m].plane[i][0]);
 		}
