@@ -44,11 +44,10 @@ void handling_WM_PAINT(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			if (is_hidden(i)) continue;
 			hidden = 1;
 
+			if (n == get_num()) SelectObject(hdc, redP);
 			VV dots;
 			for (int j = 0; j < 4; j++)
-				dots.push_back(get_point(i, j));
-
-			if (n == get_num()) SelectObject(hdc, redP);
+				dots.push_back(get_Point(i, j));
 			VV lines; VP line;
 			get_line(dots, lines);
 			vvtovp(lines, line);

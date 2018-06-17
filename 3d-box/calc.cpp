@@ -7,7 +7,7 @@ static XMVECTOR Camera_LookAt = XMVectorSet(0, 0, 1, 0);
 static XMMATRIX Camera_M;
 /* 카메라관련 변수 */
 
-static POINT display = { 1980, 1080 };
+static Point display = { 1980, 1080 };
 /* 화면크기 저장용 */
 
 static original_CUBE_struct original_CUBE;
@@ -19,12 +19,12 @@ static int num, paint_n;
 static int index[6][5] = { { 0,1,2,3,0 },{ 5,4,7,6,5 },{ 3,7,4,0,3 },{ 1,5,6,2,1 },{ 4,5,1,0,4 },{ 7,3,2,6,7 } };
 /* 시계방향 첨자 */
 
-bool judge(POINT& A, POINT& B)
+bool judge(Point& A, Point& B)
 {
 	return A.x < B.x;
 }
 
-int cross(POINT& O, POINT& A, POINT& B)
+int cross(Point& O, Point& A, Point& B)
 {
 	return (A.x - O.x) * (B.y - O.y) - (A.y - O.y) * (B.x - O.x);
 }
@@ -48,7 +48,7 @@ VP convex_hull(VP P)
 	return H;
 }
 
-F pptol(POINT& A, POINT& B)
+F pptol(Point& A, Point& B)
 {
 	FLOAT a, b;
 	a = (A.y - B.y) / (A.x - B.x + 0.000001);
@@ -56,12 +56,12 @@ F pptol(POINT& A, POINT& B)
 	return make_pair(a, b);
 }
 
-float scale(POINT A)
+float scale(Point A)
 {
 	return sqrtf(A.x * A.x + A.y * A.y);
 }
 
-float angle(POINT A, POINT O, POINT B)
+float angle(Point A, Point O, Point B)
 {
 	A.x -= O.x;
 	A.y -= O.y;
@@ -71,7 +71,7 @@ float angle(POINT A, POINT O, POINT B)
 	return acosf(dot / scale(A) / scale(B));
 }
 
-bool winding_num(VP& P, POINT O)
+bool winding_num(VP& P, Point O)
 {
 	float sum = 0;
 	for (int i = 0; i < P.size() - 1; i++) {
@@ -82,14 +82,14 @@ bool winding_num(VP& P, POINT O)
 	return fabsf(sum - 2 * (float)3.141592) < 0.001;
 }
 
-POINT point(F A, F B)
+Point POint(F A, F B)
 {
-	int x = (B.second - A.second) / (A.first - B.first);
-	int y = x * A.first + A.second;
+	double x = (B.second - A.second) / (A.first - B.first);
+	double y = x * A.first + A.second;
 	return{ x, y };
 }
 
-bool point_check(POINT O, POINT A, POINT B)
+bool Point_check(Point O, Point A, Point B)
 {
 	if (A.x < B.x) {
 		if (A.x < O.x && O.x < B.x)
@@ -100,8 +100,8 @@ bool point_check(POINT O, POINT A, POINT B)
 	return false;
 }
 
-float length(POINT A, POINT B) {
-	POINT P = { A.x - B.x, A.y - B.y };
+float length(Point A, Point B) {
+	Point P = { A.x - B.x, A.y - B.y };
 	return scale(P);
 }
 
@@ -110,7 +110,7 @@ bool judge1(PP A, PP B)
 	return length(A.second, A.first) < length(B.second, B.first);
 }
 
-POINT middle(POINT A, POINT B)
+Point middle(Point A, Point B)
 {
 	return{ (A.x + B.x) / 2, (A.y + B.y) / 2 };
 }
@@ -126,6 +126,14 @@ void rendering()
 	}
 
 	for (int n = 0; n < cu.size(); n++) {
+		VP dots;
+		for (int i = 0; i < 6; i++)
+		for (int j = 0; j < 4; j++)
+			dots.push_back(cu[n].P[index[i][j]]);
+		VV lines; VP line;
+		get_line(dots, lines);
+		vvtovp(lines, line);
+
 		for (int i = 0; i < 8; i++)
 			cu[n].VV[i] = XMVector3TransformCoord(cu[n].V[i], Camera_M);
 		for (int i = 0; i < 8; i++) {
@@ -133,7 +141,7 @@ void rendering()
 			FLOAT X, Y;
 			X = (XMVectorGetX(v) / XMVectorGetZ(v) / tanf(FOV_get() / 2) * 1000 + display.x / 2);
 			Y = (XMVectorGetY(v) / XMVectorGetZ(v) / tanf(FOV_get() / 2) * 1000 + display.y / 2);
-			POINT P = { X,Y };
+			Point P = { X,Y };
 			cu[n].P.push_back(P);
 		}
 		cu[n].ch = convex_hull(cu[n].P);
@@ -186,8 +194,8 @@ void rendering()
 				VPP temp;
 				for (int k = 0; k < cu[m].F.size(); k++)
 					for (int l = 0; l < cu[cu[m].F[k]].chl.size(); l++) {
-						POINT P = point(cu[m].pll[i][j], cu[cu[m].F[k]].chl[l]);
-						if (point_check(P, cu[m].P[index[i][j]], cu[m].P[index[i][j + 1]]))
+						Point P = POint(cu[m].pll[i][j], cu[cu[m].F[k]].chl[l]);
+						if (Point_check(P, cu[m].P[index[i][j]], cu[m].P[index[i][j + 1]]))
 							temp.push_back(make_pair(P, cu[m].P[index[i][j]]));
 					}
 				if (temp.size() > 1)
@@ -342,7 +350,7 @@ void update_matrix()
 	return;
 }
 
-XMVECTOR get_point(int i, int j)
+XMVECTOR get_Point(int i, int j)
 {
 	XMVECTOR v = get_transformed(i, j), P;
 

@@ -103,9 +103,11 @@ using namespace std;
 //오른편 시계방향	:1562
 //윗면 시계방향		:4510
 //아랫면 시계방향	:7326
+struct Point { double x, y; };
 typedef vector<XMVECTOR> VV;
-typedef vector<POINT> VP;
-typedef pair<POINT, POINT> PP;
+typedef vector<Point> VP;
+typedef vector<VP> VVP;
+typedef pair<Point, Point> PP;
 typedef vector<PP> VPP;
 typedef pair<float, float> F;
 typedef vector<F> VF;
@@ -177,7 +179,7 @@ int cubes_num(); void set_paint_n(int);
 void set_num(int); int get_num();
 bool is_hidden(int);
 void update_matrix();
-XMVECTOR get_point(int, int);
+XMVECTOR get_Point(int, int);
 XMVECTOR get_transformed(int, int);
 void get_line(VV&, VV&);
 void set_display(RECT&);
@@ -201,7 +203,7 @@ void handling_WM_HSCROLL(HWND, UINT, WPARAM, LPARAM);
 
 int inline _key(char C) { return GetAsyncKeyState(C) & 0x8000; }
 int inline _key1(char C) { return (GetAsyncKeyState(C) & 0x8001) == 0x8001; }
-POINT inline vtop(XMVECTOR& V) { return { (LONG)XMVectorGetX(V), (LONG)XMVectorGetY(V) }; }
+Point inline vtop(XMVECTOR& V) { return { (double)XMVectorGetX(V), (double)XMVectorGetY(V) }; }
 void inline vvtovp(VV& V, VP& P) { for each (XMVECTOR var in V) P.push_back(vtop(var)); }
 /* 인라인함수 */
 
