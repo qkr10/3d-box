@@ -187,7 +187,7 @@ void set_display(RECT&);
 
 void physic_reset();
 void physic_calc(bool);
-bool is_bumped(XMVECTOR); bool is_bumped(int, XMVECTOR); bool is_bumped(XMMATRIX);
+bool is_bumped(XMVECTOR&); bool is_bumped(int, XMVECTOR&); bool is_bumped(XMMATRIX&);
 void front(); void rear(); void left(); void right();
 /* 물리 계산 관련 */
 

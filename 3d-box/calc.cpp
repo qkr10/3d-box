@@ -126,14 +126,6 @@ void rendering()
 	}
 
 	for (int n = 0; n < cu.size(); n++) {
-		VP dots;
-		for (int i = 0; i < 6; i++)
-		for (int j = 0; j < 4; j++)
-			dots.push_back(cu[n].P[index[i][j]]);
-		VV lines; VP line;
-		get_line(dots, lines);
-		vvtovp(lines, line);
-
 		for (int i = 0; i < 8; i++)
 			cu[n].VV[i] = XMVector3TransformCoord(cu[n].V[i], Camera_M);
 		for (int i = 0; i < 8; i++) {
@@ -227,8 +219,18 @@ VPP get_plane(int m, int i)
 	}
 	return Return;
 }
+/*
+VP get_p(int n, int i)
+{
+	VP R;
+	for (int j = 0; j < ; j++)
+	{
 
-bool is_bumped(XMVECTOR V)
+	}
+	R.push_back(cu[n].P[index[i][j]]);
+}*/
+
+bool is_bumped(XMVECTOR& V)
 {
 	XMVECTOR T[8];
 	for (int i = 0; i < 8; i++) {
@@ -242,7 +244,7 @@ bool is_bumped(XMVECTOR V)
 	return true;
 }
 
-bool is_bumped(int num, XMVECTOR V)
+bool is_bumped(int num, XMVECTOR& V)
 {
 	XMVECTOR T[8];
 	for (int i = 0; i < 8; i++) {
@@ -256,7 +258,7 @@ bool is_bumped(int num, XMVECTOR V)
 	return true;
 }
 
-bool is_bumped(XMMATRIX M)
+bool is_bumped(XMMATRIX& M)
 {
 	XMVECTOR T[8];
 	XMVECTOR Center = (cu[num].V[0] + cu[num].V[6]) / 2;
