@@ -103,7 +103,24 @@ using namespace std;
 //오른편 시계방향	:1562
 //윗면 시계방향		:4510
 //아랫면 시계방향	:7326
-struct Point { double x, y; };
+struct Point {
+	double x, y;
+	Point operator+ (Point p) {
+		p.x += this->x;
+		p.x += this->x;
+		return p;
+	}
+	Point operator* (FLOAT f) {
+		this->x *= f;
+		this->y *= f;
+		return *this;
+	}
+	Point operator/ (FLOAT f) {
+		this->x /= f;
+		this->y /= f;
+		return *this;
+	}
+};
 typedef vector<XMVECTOR> VV;
 typedef vector<Point> VP;
 typedef vector<VP> VVP;
@@ -179,9 +196,7 @@ int cubes_num(); void set_paint_n(int);
 void set_num(int); int get_num();
 bool is_hidden(int);
 void update_matrix();
-XMVECTOR get_Point(int, int);
 XMVECTOR get_transformed(int, int);
-void get_line(VV&, VV&);
 void set_display(RECT&);
 /* 화면 계산 관련 */
 
