@@ -155,7 +155,7 @@ void rendering()
 	int s = cu.size(), val = 0;
 	vector<int> t(s, val);
 	vector<vector<int>> dp(s, t);
-	//메모이제이션이용
+	//동적계획법 이용
 	//어떤물체가 어떤물체를 가리는지 판단
 	for (int n = 0; n < s; n++)
 		for (int m = 0; m < s; m++) {
