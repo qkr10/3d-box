@@ -37,55 +37,19 @@ void handling_WM_PAINT(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	rendering();
 	for (int n = 0; n < cubes_num(); n++) {
 		set_paint_n(n);
-		int hidden = 0;
 		//6개의 면을 렌더링
 		for (int i = 0; i < 6; i++) {
 			//은면제거
 			if (is_hidden(i)) continue;
-			hidden = 1;
-
-			//if (n == get_num()) SelectObject(hdc, redP);
-			//VV dots;
-			//for (int j = 0; j < 4; j++)
-			//	dots.push_back(get_Point(i, j));
-			//VV lines; VP line;
-			//get_line(dots, lines);
-			//vvtovp(lines, line);
-			//int k = 0;
-			//while (k < line.size())
-			//{
-			//	MoveToEx(hdc, (int)line[k].x, (int)line[k].y, NULL); k++;
-			//	LineTo(hdc, (int)line[k].x, (int)line[k].y); k++;
-			//}
-			/*VP dot;
-			vvtovp(dots, dot);
-			for (int j = 0; j < 4; j++) {
-				int jj = j + 1 == 4 ? 0 : j + 1;
-				//점을 25개씩 찍는다
-				COLORREF C = RGB(255, 255, 255);
-				for (int i = -2; i < 3; i++)
-					for (int k = -2; k < 3; k++)
-						SetPixel(hdc, (int)dot[j].x + i, (int)dot[j].y + k, C);
-
-				//MoveToEx(hdc, (int)dot[j].x, (int)dot[j].y, NULL);
-				//LineTo(hdc, (int)dot[jj].x, (int)dot[jj].y);
-			}*/
 
 			SelectObject(hdc, whiteP);
 			VPP edges = get_plane(n, i);
-			for (int a = 0; a < (int)edges.size(); a++) {
+			for (int a = 0; a < edges.size(); a++) {
 				MoveToEx(hdc, edges[a].first.x, edges[a].first.y, NULL);
 				LineTo(hdc, edges[a].second.x, edges[a].second.y);
 			}
 
 		}
-		/*if (hidden == 0) continue;
-		VP A = get_ch(n);
-		SelectObject(hdc, grayP);
-		for (int i = 0; i < A.size() - 1; i++) {
-			MoveToEx(hdc, A[i].x, A[i].y, NULL);
-			LineTo(hdc, A[i + 1].x, A[i + 1].y);
-		}*/
 	}
 	SelectObject(hdc, oldP);
 
@@ -117,8 +81,8 @@ void handling_WM_MOUSEMOVE(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			oldPx = Px; oldPy = Py;
 			LOG_print(TEXT("\r\n(오른드래그)"));
 		}
-		FLOAT Angle_x = (oldPx - Px) * (float)0.003;
-		FLOAT Angle_y = (oldPy - Py) * (float)0.003;
+		FLOAT Angle_x = XMConvertToRadians((oldPx - Px) * (float)0.1);
+		FLOAT Angle_y = XMConvertToRadians((oldPy - Py) * (float)0.1);
 		oldPx = Px; oldPy = Py;
 
 		camera_rotating(Angle_x, Angle_y);
@@ -247,7 +211,7 @@ EXCEPTION:
 		T[3] = true;
 	}
 	else T[3] = false;
-	if (!is_bumped(XMMatrixRotationAxis(Axis, 0.08)))
+	if (!is_bumped(XMMatrixRotationAxis(Axis, XMConvertToRadians(1))))
 		goto EXCEPTION1;
 	paint_trigger = true;
 EXCEPTION1:

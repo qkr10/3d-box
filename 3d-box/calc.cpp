@@ -155,7 +155,7 @@ void rendering()
 	int s = cu.size(), val = 0;
 	vector<int> t(s, val);
 	vector<vector<int>> dp(s, t);
-	//동적 계획법이용
+	//동적계획법 이용
 	//어떤물체가 어떤물체를 가리는지 판단
 	for (int n = 0; n < s; n++)
 		for (int m = 0; m < s; m++) {
@@ -352,38 +352,9 @@ void update_matrix()
 	return;
 }
 
-XMVECTOR get_Point(int i, int j)
-{
-	XMVECTOR v = get_transformed(i, j), P;
-
-	//2차원으로 점을 옮김
-	FLOAT X, Y;
-	X = (XMVectorGetX(v) / XMVectorGetZ(v) / tanf(FOV_get() / 2) * 1000 + display.x / 2);
-	Y = (XMVectorGetY(v) / XMVectorGetZ(v) / tanf(FOV_get() / 2) * 1000 + display.y / 2);
-	P = XMVectorSet(X, Y, 0, 0);
-	return P;
-}
-
 XMVECTOR get_transformed(int i, int j)
 {
 	return XMVector3TransformCoord(cu[paint_n].V[index[i][j]], Camera_M);
-}
-
-void get_line(VV& dots, VV& lines)
-{
-	//내분점이용!
-	int i = 1, LINE_NUM = LINE_NUM_get();
-	while (i < LINE_NUM + 1)
-	{
-		lines.push_back(dots[1] * (FLOAT)i / LINE_NUM + dots[0] * (FLOAT)(LINE_NUM - i) / LINE_NUM);
-		lines.push_back(dots[3] * (FLOAT)i / LINE_NUM + dots[0] * (FLOAT)(LINE_NUM - i) / LINE_NUM); i++;
-	}
-	i = 1;
-	while (i < LINE_NUM)
-	{
-		lines.push_back(dots[2] * (FLOAT)i / LINE_NUM + dots[1] * (FLOAT)(LINE_NUM - i) / LINE_NUM);
-		lines.push_back(dots[2] * (FLOAT)i / LINE_NUM + dots[3] * (FLOAT)(LINE_NUM - i) / LINE_NUM); i++;
-	}
 }
 
 void set_display(RECT& rect)
